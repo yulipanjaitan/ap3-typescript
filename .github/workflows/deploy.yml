@@ -1,16 +1,4 @@
-name: Node.js CI & Build
-
-on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
+steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -19,8 +7,10 @@ jobs:
       with:
         node-version: 20
 
-    - name: Install dependencies
-      run: npm install
+    - name: Generate lockfile & Install
+      run: |
+        npm i --package-lock-only
+        npm install
 
     - name: Build project
       run: npm run build --if-present
