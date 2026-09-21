@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "nama": "Admin System",
+    "email": "admin",
+    "pass": "admin",
+    "role": "Admin",
+    "createdAt": "2026-09-21T12:45:26.642Z"
+  }
+]

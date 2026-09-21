@@ -1,0 +1,76 @@
+:root {
+  --bg-color: #0b192c;
+  --card-bg: #1e293b;
+  --sidebar-bg: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --border-color: #334155;
+  
+  --primary: #f59e0b;
+  --primary-dark: #b45309;
+  --primary-green: #10b981;
+  --primary-light: rgba(245, 158, 11, 0.15);
+  --emerald-dark: #d97706;
+  
+  --radius-xl: 20px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px;
+}
+
+i[class^="fi-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+h2 { font-size: 18px; margin: 0 0 4px; color: var(--text-main); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 13px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 18px; font-weight: 700; }
+label { display: block; font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  background: #0f172a;
+  color: var(--text-main);
+  transition: all 0.2s;
+  text-transform: none !important;
+}
+
+input.lowercase-input { text-transform: lowercase !important; }
+input[type="date"], input[type="time"] { color-scheme: dark; cursor: pointer; }
+input.uppercase-input { text-transform: uppercase !important; }
+input[readonly] { background: #1e293b; color: #94a3b8; cursor: not-allowed; }
+input[type="email"] { text-transform: lowercase !important; }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+textarea { min-height: 80px; resize: vertical; }
+
+.small { font-size: 11.5px; color: var(--text-muted); }
+.item { border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin: 10px 0; background: #0f172a; }
