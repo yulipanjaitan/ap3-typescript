@@ -1,4 +1,15 @@
-import { StoreState, PerkaraRecord, UserAccount, AuthSession } from '../types/index.js';
+export interface StoreState {
+  currentUser: any;
+  userAccounts: any[];
+  currentDoc: string;
+  currentTLDoc: string;
+  selectedPaperSize: string;
+  databasePerkara: any[];
+  activeRecordIndex: number;
+  visiblePasswordIndex: number;
+  selectedViewPage: any;
+  currentActivePageIdx: number;
+}
 
 export const store: StoreState = {
   currentUser: null,
@@ -25,15 +36,19 @@ export async function savePerkaraToStorage(): Promise<void> {
   try {
     await fetch('/api/perkara/bulk', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ list: store.databasePerkara })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        list: store.databasePerkara
+      })
     });
   } catch (err) {
     console.warn('[Store] Gagal sinkronisasi ke backend server, menggunakan cache lokal:', err);
   }
 }
 
-export async function loadPerkaraFromStorage(): Promise<PerkaraRecord[]> {
+export async function loadPerkaraFromStorage(): Promise<any[]> {
   // 1. Muat dari localStorage terlebih dahulu untuk tampilan cepat
   const saved = localStorage.getItem('databasePerkara');
   if (saved) {
@@ -59,6 +74,5 @@ export async function loadPerkaraFromStorage(): Promise<PerkaraRecord[]> {
   } catch (err) {
     console.warn('[Store] Mode offline atau server tidak merespon, menggunakan data lokal:', err);
   }
-
   return store.databasePerkara;
 }

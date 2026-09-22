@@ -5,11 +5,11 @@
   "type": "module",
   "main": "dist/server/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.server.json && tsc -p tsconfig.client.json",
-    "build:server": "tsc -p tsconfig.server.json",
-    "build:client": "tsc -p tsconfig.client.json",
+    "build": "npx tsc -p tsconfig.server.json && npx tsc -p tsconfig.client.json",
+    "build:server": "npx tsc -p tsconfig.server.json",
+    "build:client": "npx tsc -p tsconfig.client.json",
     "start": "node dist/server/index.js",
-    "dev": "node --loader ts-node/esm src/server/index.ts",
+    "dev": "npm run build && node dist/server/index.js",
     "preview": "node dist/server/index.js"
   },
   "keywords": [
@@ -24,7 +24,7 @@
   "author": "Direktorat Jenderal Bea dan Cukai",
   "license": "ISC",
   "dependencies": {
-    "better-sqlite3": "^9.4.3",
+    "better-sqlite3": "^9.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"

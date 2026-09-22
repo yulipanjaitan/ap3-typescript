@@ -2,29 +2,29 @@ import { store, savePerkaraToStorage } from '../state/store.js';
 import { escText, getVal, formatDate, formatDateIndo, formatModusVerb } from '../utils/formatters.js';
 import { showToast } from '../modules/ui.js';
 
-export function getDocNum(id) {
-  let el = document.getElementById(id);
+export function getDocNum(id: string): string {
+  let el = document.getElementById(id) as HTMLInputElement | null;
   return el ? el.value.trim() : '';
 }
 
-export function fmtLP() {
+export function fmtLP(): string {
   let val = getDocNum('No_LPP') || getVal('NoLP_LP_1');
   return (val && val !== '-') ? `LPP-${val}/KPU.206/2026` : 'LPP-/KPU.206/2026';
 }
 
-export function fmtLPF() {
+export function fmtLPF(): string {
   let val = getDocNum('No_LPF') || getVal('NoLP_LP_1');
   return (val && val !== '-') ? `LPF-${val}/KPU.206/2026` : 'LPF-/KPU.206/2026';
 }
 
-export function fmtSBP() {
+export function fmtSBP(): string {
   let val = getVal('Nomor_SBP');
   let status = getVal('Status_Penangkapan');
   let tipe = status.toUpperCase().includes('LIMPAHAN') ? 'LIMPAH' : 'MANDIRI';
   return (val && val !== '-') ? `SBP-${val}/${tipe}/KPU.2/2026` : `SBP-/${tipe}/KPU.2/2026`;
 }
 
-export function fmtSprinIndak() {
+export function fmtSprinIndak(): string {
   let val = getVal('No_SPRIN_Indak');
   let tgl = formatDate('Tanggal_SPRIN_Indak');
   
@@ -36,49 +36,51 @@ export function fmtSprinIndak() {
   return '-';
 }
 
-export function fmtPrintCacah() { 
+export function fmtPrintCacah(): string { 
   let val = getDocNum('No_SPRIN_CACAH');
   return (val && val !== '-') ? `PRIN-${val}/KPU.206/CACAH/2026` : 'PRIN-/KPU.206/CACAH/2026'; 
 }
 
-export function fmtSplit() { 
+export function fmtSplit(): string { 
   let val = getDocNum('Nomor_SPLIT');
   return (val && val !== '-') ? `SPLIT-${val}/KPU.206/2026` : 'SPLIT-/KPU.206/2026'; 
 }
 
-export function fmtBA() { 
+export function fmtBA(): string { 
   let val = getDocNum('Nomor_BA');
   return (val && val !== '-') ? `BA-${val}/KPU.206/CACAH/2026` : 'BA-/KPU.206/CACAH/2026'; 
 }
 
-export function fmtLHP() { 
+export function fmtLHP(): string { 
   let val = getDocNum('Nomor_LHP');
   return (val && val !== '-') ? `LHP-${val}/KPU.206/2026` : 'LHP-/KPU.206/2026'; 
 }
 
-export function syncLPToDocs(val) {
-  if(!document.getElementById('No_LPP').value) document.getElementById('No_LPP').value = val;
-  if(!document.getElementById('No_LPF').value) document.getElementById('No_LPF').value = val;
-  if (window.refreshReportTableUI) window.refreshReportTableUI();
-  if (window.updateReportLive) window.updateReportLive();
+export function syncLPToDocs(val: string): void {
+  let noLpp = document.getElementById('No_LPP') as HTMLInputElement | null;
+  let noLpf = document.getElementById('No_LPF') as HTMLInputElement | null;
+  if (noLpp && !noLpp.value) noLpp.value = val;
+  if (noLpf && !noLpf.value) noLpf.value = val;
+  if (typeof (window as any).refreshReportTableUI === 'function') (window as any).refreshReportTableUI();
+  if (typeof (window as any).updateReportLive === 'function') (window as any).updateReportLive();
 }
 
-export function officeHeader(isBA = false) {
+export function officeHeader(isBA: boolean = false): string {
   return `<div class="office-left" style="font-family: Arial, Helvetica, sans-serif !important; font-weight: bold; font-size: 10pt; line-height: 1.3;">KEMENTERIAN KEUANGAN REPUBLIK INDONESIA<br>DIREKTORAT JENDERAL BEA DAN CUKAI<br>KANTOR PELAYANAN UTAMA BEA DAN CUKAI TIPE B BATAM</div>`;
 }
 
-export function tteBadge() {
+export function tteBadge(): string {
   return `<div class="tte-badge" style="font-size:8.5pt; color:#9ca3af !important; margin:3px 0 2px 0; font-style:normal; font-weight:normal; text-align:left; letter-spacing:0.01em;">Ditandatangani secara elektronik</div>`;
 }
 
-export function baseReport(title, no, isBA = false) {
+export function baseReport(title: string, no: string, isBA: boolean = false): string {
   return `<div class="report" style="font-family: Arial, Helvetica, sans-serif !important; font-size: 10pt; color: #000 !important; line-height: 1.3;">
     ${officeHeader(isBA)}
     <div class="title-center" style="font-family: Arial, Helvetica, sans-serif; text-align:center; font-weight:bold; font-size:11.5pt; margin:14px 0 4px 0;">${title}</div>
     <div class="nomor-center" style="font-family: Arial, Helvetica, sans-serif; text-align:center; margin-bottom:16px;">Nomor : ${no}</div>`;
 }
 
-export function buildTableKv(rows) {
+export function buildTableKv(rows: any[]): string {
   return `<table class="rtable" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif;">${rows.map(r => {
     if (r.length === 3) {
       return `<tr>
@@ -97,17 +99,17 @@ export function buildTableKv(rows) {
   }).join('')}</table>`;
 }
 
-export function handleSingleValidation() {
-  if ((typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0) && store.databasePerkara.length > 0) {
-    store.activeRecordIndex = 0;
+export function handleSingleValidation(): void {
+  if ((typeof (store as any).activeRecordIndex === 'undefined' || (store as any).activeRecordIndex < 0) && store.databasePerkara.length > 0) {
+    (store as any).activeRecordIndex = 0;
   }
 
-  if (typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0 || !store.databasePerkara[store.activeRecordIndex]) {
+  if (typeof (store as any).activeRecordIndex === 'undefined' || (store as any).activeRecordIndex < 0 || !store.databasePerkara[(store as any).activeRecordIndex]) {
     showToast("INFORMASI", "Belum ada data perkara untuk divalidasi.", "warning");
     return;
   }
 
-  let activeRecord = store.databasePerkara[store.activeRecordIndex];
+  let activeRecord: any = store.databasePerkara[(store as any).activeRecordIndex];
   let noLp = activeRecord.NoLP_LP_1 || '';
 
   let docTypes = ['LPP', 'LPF', 'SPLIT', 'SPRIN_CACAH', 'BA', 'LHP'];
@@ -144,27 +146,28 @@ export function handleSingleValidation() {
     document.body.appendChild(toastDiv);
     existingToast = toastDiv;
   } else {
-    document.getElementById('toastMessage').innerText = "Sudah divalidasi dan disinkronkan!";
+    let msgEl = document.getElementById('toastMessage');
+    if (msgEl) msgEl.innerText = "Sudah divalidasi dan disinkronkan!";
   }
 
   setTimeout(() => {
-    existingToast.style.opacity = '1';
-    existingToast.style.transform = 'translateY(0)';
+    existingToast!.style.opacity = '1';
+    existingToast!.style.transform = 'translateY(0)';
   }, 10);
 
   setTimeout(() => {
-    existingToast.style.opacity = '0';
-    existingToast.style.transform = 'translateY(20px)';
+    existingToast!.style.opacity = '0';
+    existingToast!.style.transform = 'translateY(20px)';
   }, 3000);
 
-  if (typeof window.refreshReportTableUI === 'function') {
-    window.refreshReportTableUI();
+  if (typeof (window as any).refreshReportTableUI === 'function') {
+    (window as any).refreshReportTableUI();
   }
 }
 
-export function LPP() {
+export function LPP(): string {
   let tglLPP = formatDate('Tanggal_LPP') !== '-' ? formatDate('Tanggal_LPP') : formatDate('Tanggal_LP_LP_1');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
+  let rawJam = (document.getElementById('Jam_Kejadian') as HTMLInputElement)?.value.trim() || '';
   let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
   let umurVal = getVal('Umur_Pelaku');
   let umurFormatted = (umurVal !== '-' && umurVal !== '') ? umurVal + ' tahun' : '-';
@@ -174,13 +177,11 @@ export function LPP() {
   let dokPabDisplay = 'Tanpa Dokumen';
 
   if (!dokPabVal.toLowerCase().includes('tanpa dokumen') && dokPabVal && dokPabVal !== '-') {
-    let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select') ? document.getElementById('Jenis_Dok_Pemberitahuan_Select').value : '';
+    let selJenis = (document.getElementById('Jenis_Dok_Pemberitahuan_Select') as HTMLSelectElement)?.value || '';
     let jenisDok = selJenis === 'LAINNYA' 
-      ? (document.getElementById('Jenis_Dok_Pemberitahuan_Manual') ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual').value.trim() : '') 
+      ? ((document.getElementById('Jenis_Dok_Pemberitahuan_Manual') as HTMLInputElement)?.value.trim() || '') 
       : (selJenis !== '-' ? selJenis : '');
-    let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan') 
-      ? document.getElementById('Nomor_Dok_Pemberitahuan').value.trim() 
-      : '';
+    let nomorDok = (document.getElementById('Nomor_Dok_Pemberitahuan') as HTMLInputElement)?.value.trim() || '';
 
     let rawString = (jenisDok ? jenisDok + ' ' : '') + (nomorDok ? nomorDok : dokPabVal);
     rawString = rawString.trim().replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '');
@@ -424,18 +425,17 @@ export function LPP() {
   </div></div>`;
 }
 
-export function LPF() {
+export function LPF(): string {
   let tglLPF = formatDate('Tanggal_LPF') !== '-' ? formatDate('Tanggal_LPF') : formatDate('Tanggal_LP_LP_1');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
+  let rawJam = (document.getElementById('Jam_Kejadian') as HTMLInputElement)?.value.trim() || '';
   let jamFormatted = rawJam ? rawJam.replace(':', '.') : '-';
   let umurVal = getVal('Umur_Pelaku');
   let umurFormatted = (umurVal !== '-' && umurVal !== '') ? umurVal + ' tahun' : '-';
   
-  let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
   let dokPabVal = getVal('Dokumen_Pemberitahuan');
-  let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select') ? document.getElementById('Jenis_Dok_Pemberitahuan_Select').value : '';
-  let jenisDokManual = document.getElementById('Jenis_Dok_Pemberitahuan_Manual') ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual').value.trim() : '';
-  let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan') ? document.getElementById('Nomor_Dok_Pemberitahuan').value.trim() : '';
+  let selJenis = (document.getElementById('Jenis_Dok_Pemberitahuan_Select') as HTMLSelectElement)?.value || '';
+  let jenisDokManual = (document.getElementById('Jenis_Dok_Pemberitahuan_Manual') as HTMLInputElement)?.value.trim() || '';
+  let nomorDok = (document.getElementById('Nomor_Dok_Pemberitahuan') as HTMLInputElement)?.value.trim() || '';
 
   let jenisDokPabeanDisplay = '-';
   let nomorDokPabeanDisplay = '-';
@@ -671,7 +671,7 @@ export function LPF() {
       <td></td>
       <td style="vertical-align:top;">Tanggal</td>
       <td style="text-align:center; vertical-align:top;">:</td>
-      <td style="text-align:justify; vertical-align:top;">${tglDokPab}</td>
+      <td style="text-align:justify; vertical-align:top;">${formatDate('Tanggal_Dokumen_Pemberitahuan')}</td>
     </tr>
 
     <tr>
@@ -755,11 +755,11 @@ export function LPF() {
   </div></div>`;
 }
 
-export function SPLIT() {
+export function SPLIT(): string {
   let tglSplit = formatDate('Tanggal_SPLIT') !== '-' ? formatDate('Tanggal_SPLIT') : formatDate('Tanggal_LP_LP_1');
   let hari = getVal('Hari_SBP');
   let tglIndo = formatDate('Tanggal_SBP');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
+  let rawJam = (document.getElementById('Jam_Kejadian') as HTMLInputElement)?.value.trim() || '';
   let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
   let lokasi = getVal('Lokasi_Penindakan');
   let rawModus = getVal('Modus_Operandi');
@@ -854,7 +854,7 @@ export function SPLIT() {
   </div></div>`;
 }
 
-export function SPRIN_CACAH() {
+export function SPRIN_CACAH(): string {
   let tglSprin = formatDate('Tanggal_Sprin_Cacah') !== '-' ? formatDate('Tanggal_Sprin_Cacah') : formatDate('Tanggal_SBP');
   
   let listPegawai = JSON.parse(localStorage.getItem('sprinPegawaiList') || '[]');
@@ -867,7 +867,7 @@ export function SPRIN_CACAH() {
     ];
   }
 
-  let pegawaiHtml = listPegawai.map((p, i) => `
+  let pegawaiHtml = listPegawai.map((p: any, i: number) => `
     <table style="width:100%; border:none; margin-bottom:3px; border-collapse:collapse; font-size:10pt;">
       <tr><td style="width:25px; vertical-align:top;">${i+1}.</td><td style="width:110px; vertical-align:top;">Nama</td><td style="width:15px; text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;"><b>${escText(p.nama)}</b></td></tr>
       <tr><td></td><td style="vertical-align:top;">NIP</td><td style="text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;">${escText(p.nip)}</td></tr>
@@ -935,8 +935,8 @@ export function SPRIN_CACAH() {
   </div></div>`;
 }
 
-export function BA() {
-  let paperLandscapeClass = store.selectedPaperSize === 'A4' ? 'report landscape paper-a4' : 'report landscape';
+export function BA(): string {
+  let paperLandscapeClass = (store as any).selectedPaperSize === 'A4' ? 'report landscape paper-a4' : 'report landscape';
   let items = JSON.parse(localStorage.getItem('cacahItems') || '[]');
   
   let hariCacah = (getVal('Hari_Cacah') || '-').toLowerCase();
@@ -949,7 +949,7 @@ export function BA() {
   let noBA = fmtBA();
 
   let listPegawai = JSON.parse(localStorage.getItem('sprinPegawaiList') || '[]');
-  let p1, p2, p3, p4, p5, p6;
+  let p1: any, p2: any, p3: any, p4: any, p5: any, p6: any;
 
   if (listPegawai.length >= 6) {
     p1 = { nama: listPegawai[0].nama, nip: listPegawai[0].nip, pkt: listPegawai[0].pangkat || listPegawai[0].pkt, jab: listPegawai[0].jabatan || listPegawai[0].jab };
@@ -971,7 +971,7 @@ export function BA() {
   let timPenindakan = [p4, p5, p6];
   let allPetugas = [p1, p2, p3, p4, p5, p6];
 
-  let renderTabelPegawai = (list) => list.map((p, idx) => `
+  let renderTabelPegawai = (list: any[]) => list.map((p: any, idx: number) => `
     <table style="width:100%; border-collapse:collapse; margin-bottom:4px; font-family:Arial, sans-serif;">
       <tr>
         <td style="width:5%; text-align:right; padding-right:12px; vertical-align:top;">${idx + 1}.</td>
@@ -1006,12 +1006,12 @@ export function BA() {
         Yang Melakukan Pencacahan,
       </div>
       <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; text-align:left;">
-        ${allPetugas.map(p => `
+        ${allPetugas.map((p: any) => `
           <div>
             <div style="font-size:9.5pt;">${escText(p.jab)},</div>
             <div class="signature"></div>
             ${tteBadge()}
-            <b>${escText(p.nama)}</b><br>NIP. ${escText(p.nip)}
+            <b>${escText(p.nama)}</b><br>NIP.${escText(p.nip)}
           </div>
         `).join('')}
       </div>
@@ -1024,7 +1024,7 @@ export function BA() {
         Yang Melakukan Pencacahan,
       </div>
       <div style="display:grid; grid-template-columns: repeat(6, 1fr); gap:10px; text-align:left;">
-        ${allPetugas.map(p => `
+        ${allPetugas.map((p: any) => `
           <div>
             <div style="font-size:8pt; line-height:1.2; min-height:24px;">${escText(p.jab)},</div>
             <div class="signature" style="height:50px;"></div>
@@ -1099,7 +1099,7 @@ export function BA() {
               <div style="font-size:8.5pt; color:#64748b;">Silakan pilih filter dokumen <b>BA Cacah</b> di atas, lalu klik tombol <b>+ Tambah Barang Cacah</b> untuk memasukkan uraian barang agar muncul di baris tabel ini.</div>
             </td>
           </tr>` : 
-          items.map((x, i) => `<tr>
+          items.map((x: any, i: number) => `<tr>
             <td style="text-align:center; border:1px solid #000; vertical-align:top; padding:6px;">${i + 1}</td>
             <td style="text-align:center; border:1px solid #000; vertical-align:top; padding:6px;">${escText(x.komoditi || getVal('Komoditi'))}</td>
             <td style="text-align:left; border:1px solid #000; vertical-align:top; padding:6px;">${escText(x.uraian)}</td>
@@ -1119,21 +1119,19 @@ export function BA() {
   return page1 + page2;
 }
 
-export function LHP() {
+export function LHP(): string {
   let tglLHP = formatDate('Tanggal_LHP') !== '-' ? formatDate('Tanggal_LHP') : formatDate('Tanggal_LP_LP_1');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
+  let rawJam = (document.getElementById('Jam_Kejadian') as HTMLInputElement)?.value.trim() || '';
   let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
 
   let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
   let dokPabVal = getVal('Dokumen_Pemberitahuan');
 
-  let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select') ? document.getElementById('Jenis_Dok_Pemberitahuan_Select').value : '';
+  let selJenis = (document.getElementById('Jenis_Dok_Pemberitahuan_Select') as HTMLSelectElement)?.value || '';
   let jenisDok = selJenis === 'LAINNYA' 
-    ? (document.getElementById('Jenis_Dok_Pemberitahuan_Manual') ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual').value.trim() : '') 
+    ? ((document.getElementById('Jenis_Dok_Pemberitahuan_Manual') as HTMLInputElement)?.value.trim() || '') 
     : (selJenis !== '-' ? selJenis : '');
-  let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan') 
-    ? document.getElementById('Nomor_Dok_Pemberitahuan').value.trim() 
-    : '';
+  let nomorDok = (document.getElementById('Nomor_Dok_Pemberitahuan') as HTMLInputElement)?.value.trim() || '';
 
   let jenisDokPabeanDisplay = '-';
   let nomorTglPabeanDisplay = '-';
@@ -1158,7 +1156,7 @@ export function LHP() {
 
     nomorSaja = nomorSaja.replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '').trim();
 
-    let partsNomorTgl = [];
+    let partsNomorTgl: string[] = [];
     if (nomorSaja) {
       partsNomorTgl.push(escText(nomorSaja));
     }
@@ -1169,11 +1167,12 @@ export function LHP() {
     nomorTglPabeanDisplay = partsNomorTgl.length > 0 ? partsNomorTgl.join(' ') : '-';
   }
 
-  let rec = (store.activeRecordIndex >= 0 && store.databasePerkara[store.activeRecordIndex]) ? store.databasePerkara[store.activeRecordIndex] : {};
-  let selPelengkap = document.getElementById('Jenis_Dok_Pelengkap_Select') ? document.getElementById('Jenis_Dok_Pelengkap_Select').value : (rec.Jenis_Dok_Pelengkap_Select || '-');
-  let manualPelengkap = document.getElementById('Jenis_Dok_Pelengkap_Manual') ? document.getElementById('Jenis_Dok_Pelengkap_Manual').value.trim() : (rec.Jenis_Dok_Pelengkap_Manual || '');
-  let nomorPelengkap = document.getElementById('Nomor_Dok_Pelengkap') ? document.getElementById('Nomor_Dok_Pelengkap').value.trim() : (rec.Nomor_Dok_Pelengkap || '');
-  let rawTglPelengkap = document.getElementById('Tanggal_Dok_Pelengkap') ? document.getElementById('Tanggal_Dok_Pelengkap').value : (rec.Tanggal_Dok_Pelengkap || '');
+  let activeIdx = (store as any).activeRecordIndex;
+  let rec = (activeIdx >= 0 && store.databasePerkara[activeIdx]) ? store.databasePerkara[activeIdx] : {};
+  let selPelengkap = (document.getElementById('Jenis_Dok_Pelengkap_Select') as HTMLSelectElement)?.value || ((rec as any).Jenis_Dok_Pelengkap_Select || '-');
+  let manualPelengkap = (document.getElementById('Jenis_Dok_Pelengkap_Manual') as HTMLInputElement)?.value.trim() || ((rec as any).Jenis_Dok_Pelengkap_Manual || '');
+  let nomorPelengkap = (document.getElementById('Nomor_Dok_Pelengkap') as HTMLInputElement)?.value.trim() || ((rec as any).Nomor_Dok_Pelengkap || '');
+  let rawTglPelengkap = (document.getElementById('Tanggal_Dok_Pelengkap') as HTMLInputElement)?.value || ((rec as any).Tanggal_Dok_Pelengkap || '');
   let tglPelengkapIndo = rawTglPelengkap ? formatDateIndo(rawTglPelengkap) : '';
 
   let jenisPelengkapDisplay = '-';
@@ -1182,7 +1181,7 @@ export function LHP() {
   if (selPelengkap !== '-' && selPelengkap !== '') {
     jenisPelengkapDisplay = selPelengkap === 'LAINNYA' ? (manualPelengkap || 'Lainnya') : selPelengkap;
 
-    let partsPelengkap = [];
+    let partsPelengkap: string[] = [];
     if (nomorPelengkap) {
       partsPelengkap.push(escText(nomorPelengkap));
     }

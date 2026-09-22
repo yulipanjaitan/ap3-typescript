@@ -28,7 +28,7 @@ import * as tindaklanjut from './templates/tindaklanjut.js';
 const allModules = [formatters, ui, auth, disposisi, perkara, editor, laporan, tindaklanjut];
 allModules.forEach(mod => {
   Object.keys(mod).forEach(key => {
-    window[key] = mod[key];
+    (window as any)[key] = (mod as any)[key];
   });
 });
 
@@ -72,31 +72,31 @@ document.addEventListener("DOMContentLoaded", function() {
   const tabPanes = document.querySelectorAll('.tab-pane');
 
   navButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
+    button.addEventListener('click', function(this: HTMLElement, e: Event) {
       e.preventDefault();
       navButtons.forEach(btn => btn.classList.remove('active'));
       this.classList.add('active');
 
       const targetId = this.getAttribute('data-target');
-      if(!targetId) return;
+      if (!targetId) return;
 
       tabPanes.forEach(tab => tab.classList.remove('active'));
       const activeTab = document.getElementById(targetId);
-      if(activeTab) activeTab.classList.add('active');
+      if (activeTab) activeTab.classList.add('active');
 
-      if(targetId === 'disposisi') {
+      if (targetId === 'disposisi') {
         disposisi.renderDisposisiTable();
         disposisi.checkDisposisiAccessByRole();
       }
 
-      if(targetId === 'dasbor') {
+      if (targetId === 'dasbor') {
         perkara.updateDashboardStats();
-      } else if(targetId === 'laporan') {
-        let sel = document.getElementById('docFilterSelect');
+      } else if (targetId === 'laporan') {
+        let sel = document.getElementById('docFilterSelect') as HTMLSelectElement | null;
         let selectedType = sel ? sel.value : store.currentDoc;
         editor.switchDocTab(selectedType);
-      } else if(targetId === 'tindaklanjut') {
-        let selTL = document.getElementById('tlDocFilterSelect');
+      } else if (targetId === 'tindaklanjut') {
+        let selTL = document.getElementById('tlDocFilterSelect') as HTMLSelectElement | null;
         let selectedTLType = selTL ? selTL.value : store.currentTLDoc;
         editor.switchTLDocTab(selectedTLType);
       }
@@ -107,23 +107,25 @@ document.addEventListener("DOMContentLoaded", function() {
   const geminiSubPanes = document.querySelectorAll('.setting-subtab-pane');
 
   geminiNavItems.forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function(this: HTMLElement) {
       geminiNavItems.forEach(btn => btn.classList.remove('active'));
       this.classList.add('active');
 
       const targetSub = this.getAttribute('data-setting-tab');
       geminiSubPanes.forEach(pane => pane.classList.remove('active'));
       
-      const activePane = document.getElementById(targetSub);
-      if(activePane) activePane.classList.add('active');
+      if (targetSub) {
+        const activePane = document.getElementById(targetSub);
+        if (activePane) activePane.classList.add('active');
+      }
     });
   });
 
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', function(e: MouseEvent) {
     let profileWrapper = document.querySelector('.user-profile-wrapper');
     let dropdownMenu = document.getElementById('userDropdownMenu');
-    if (profileWrapper && !profileWrapper.contains(e.target)) {
-      if(dropdownMenu) dropdownMenu.classList.remove('show');
+    if (profileWrapper && e.target && !profileWrapper.contains(e.target as Node)) {
+      if (dropdownMenu) dropdownMenu.classList.remove('show');
     }
   });
 
@@ -139,28 +141,31 @@ document.addEventListener("DOMContentLoaded", function() {
 // Otomatis aktif saat tombol cetak ditekan atau Ctrl+P
 window.addEventListener('beforeprint', () => {
   document.querySelectorAll('#reports .report, #tl_reports .report').forEach((card) => {
-    card.style.display = 'block';
+    (card as HTMLElement).style.display = 'block';
   });
 });
 
 // Otomatis merapikan kembali ke halaman preview aktif setelah selesai cetak
 window.addEventListener('afterprint', () => {
   if (document.getElementById('reports')) {
-    ui.navigatePreviewPage(store.currentActivePageIdx, 'reports');
+    ui.navigatePreviewPage((store as any).currentActivePageIdx, 'reports');
   }
   if (document.getElementById('tl_reports')) {
-    ui.navigatePreviewPage(store.currentActivePageIdx, 'tl_reports');
+    ui.navigatePreviewPage((store as any).currentActivePageIdx, 'tl_reports');
   }
 });
 
-document.addEventListener('click', function(e) {
-  let btnTerima = e.target.closest('.btn-terima-dsp');
+document.addEventListener('click', function(e: MouseEvent) {
+  let targetEl = e.target as HTMLElement | null;
+  if (!targetEl) return;
+
+  let btnTerima = targetEl.closest('.btn-terima-dsp');
   if (btnTerima) {
     let id = btnTerima.getAttribute('data-id');
     disposisi.responDisposisi('terima', id);
   }
 
-  let btnTolak = e.target.closest('.btn-tolak-dsp');
+  let btnTolak = targetEl.closest('.btn-tolak-dsp');
   if (btnTolak) {
     let id = btnTolak.getAttribute('data-id');
     disposisi.responDisposisi('tolak', id);

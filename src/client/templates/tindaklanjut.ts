@@ -3,17 +3,19 @@ import { escText, getVal, tanggalKeTeks } from '../utils/formatters.js';
 import { showToast } from '../modules/ui.js';
 import { tteBadge, buildTableKv } from './laporan.js';
 
-export function handleSingleValidationTL() {
-  if ((typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0) && store.databasePerkara.length > 0) {
-    store.activeRecordIndex = 0;
+export function handleSingleValidationTL(): void {
+  let activeIdx = (store as any).activeRecordIndex;
+  if ((typeof activeIdx === 'undefined' || activeIdx < 0) && store.databasePerkara.length > 0) {
+    (store as any).activeRecordIndex = 0;
+    activeIdx = 0;
   }
 
-  if (typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0 || !store.databasePerkara[store.activeRecordIndex]) {
+  if (typeof activeIdx === 'undefined' || activeIdx < 0 || !store.databasePerkara[activeIdx]) {
     showToast("INFORMASI", "Belum ada data perkara/LHP yang tersedia untuk divalidasi.", "warning");
     return;
   }
 
-  let activeRecord = store.databasePerkara[store.activeRecordIndex];
+  let activeRecord: any = store.databasePerkara[activeIdx];
   let noLhp = activeRecord.Nomor_LHP || activeRecord.NoLP_LP_1 || '1';
   let tglLhp = activeRecord.Tanggal_LHP || activeRecord.Tanggal_LP_LP_1 || '';
 
@@ -50,27 +52,29 @@ export function handleSingleValidationTL() {
     document.body.appendChild(toastDiv);
     existingToast = toastDiv;
   } else {
-    document.getElementById('toastMessage').innerText = "Data Tindak Lanjut berhasil divalidasi & disinkronkan dari LHP!";
+    let msgEl = document.getElementById('toastMessage');
+    if (msgEl) msgEl.innerText = "Data Tindak Lanjut berhasil divalidasi & disinkronkan dari LHP!";
   }
 
   setTimeout(() => {
-    existingToast.style.opacity = '1';
-    existingToast.style.transform = 'translateY(0)';
+    existingToast!.style.opacity = '1';
+    existingToast!.style.transform = 'translateY(0)';
   }, 10);
 
   setTimeout(() => {
-    existingToast.style.opacity = '0';
-    existingToast.style.transform = 'translateY(20px)';
+    existingToast!.style.opacity = '0';
+    existingToast!.style.transform = 'translateY(20px)';
   }, 3000);
 
-  if (typeof window.refreshTLTableUI === 'function') {
-    window.refreshTLTableUI();
+  if (typeof (window as any).refreshTLTableUI === 'function') {
+    (window as any).refreshTLTableUI();
   }
 }
 
-export function getTLNumFormat(type) {
-  if (store.activeRecordIndex < 0) return '-';
-  let rec = store.databasePerkara[store.activeRecordIndex];
+export function getTLNumFormat(type: string): string {
+  let activeIdx = (store as any).activeRecordIndex;
+  if (activeIdx < 0) return '-';
+  let rec: any = store.databasePerkara[activeIdx];
   let num = rec.Nomor_LHP || rec.NoLP_LP_1 || '338';
   
   if (type === 'BAST_PEMILIK') return `BAST-${num}/KPU.2064/2026`;
@@ -81,7 +85,7 @@ export function getTLNumFormat(type) {
   return '-';
 }
 
-export function closeTLReportTag(customSignHTML, tglStr) {
+export function closeTLReportTag(customSignHTML: string, tglStr?: string): string {
   let t = tglStr || '28 September 2026';
   return `<div style="page-break-inside: avoid !important; margin-top:16px; font-family:Arial, sans-serif; font-size:10pt;">
     <div style="text-align:right; margin-bottom:8px;">Batam, ${t}</div>
@@ -89,9 +93,10 @@ export function closeTLReportTag(customSignHTML, tglStr) {
   </div></div>`;
 }
 
-export function BAST_PEMILIK() {
-  if (store.activeRecordIndex < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
-  let rec = store.databasePerkara[store.activeRecordIndex];
+export function BAST_PEMILIK(): string {
+  let activeIdx = (store as any).activeRecordIndex;
+  if (activeIdx < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
+  let rec: any = store.databasePerkara[activeIdx];
   let num = getTLNumFormat('BAST_PEMILIK');
   let hari = escText(rec.TL_Hari_BAST || 'Selasa');
   let tglHuruf = escText(rec.TL_Tgl_Huruf_BAST || 'dua puluh satu Oktober tahun dua ribu dua puluh enam');
@@ -137,18 +142,19 @@ export function BAST_PEMILIK() {
       ['Sarana Pengangkut', 'Jenis / No. Reg', sarkut],
       ['Barang Bukti', 'Uraian Barang', barang],
       ['Dokumen', 'Jenis & Nomor', dokumen],
-      ['Penerima', 'Nama / NIK', `${namaPenerima} (NIK: ${nikPenerima})`],
+      ['Penerima', 'Nama / NIK', `${namaPenerima} (NIK:${nikPenerima})`],
       ['Alamat Penerima', 'Alamat Lengkap', alamatPenerima],
-      ['Petugas Penyerah', 'Nama Petugas', `${p1} ${p2 ? 'dan ' + p2 : ''}`]
+      ['Petugas Penyerah', 'Nama Petugas', `${p1}${p2 ? 'dan ' + p2 : ''}`]
     ])}
     <p style="margin-top:10px; margin-bottom:0; text-align:justify;">Demikian Berita Acara Serah Terima ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.</p>
     ${closeTLReportTag(ttdBast, tglSurat)}
   </div>`;
 }
 
-export function BA_SEGEL() {
-  if (store.activeRecordIndex < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
-  let rec = store.databasePerkara[store.activeRecordIndex];
+export function BA_SEGEL(): string {
+  let activeIdx = (store as any).activeRecordIndex;
+  if (activeIdx < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
+  let rec: any = store.databasePerkara[activeIdx];
   let num = getTLNumFormat('BA_SEGEL');
   let hari = escText(rec.TL_Segel_Hari || 'Selasa');
   let tglHuruf = escText(rec.TL_Segel_Tgl_Huruf || 'dua puluh satu Oktober tahun dua ribu dua puluh enam');
@@ -210,9 +216,10 @@ export function BA_SEGEL() {
   </div>`;
 }
 
-export function KEP_BDN() {
-  if (store.activeRecordIndex < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
-  let rec = store.databasePerkara[store.activeRecordIndex];
+export function KEP_BDN(): string {
+  let activeIdx = (store as any).activeRecordIndex;
+  if (activeIdx < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
+  let rec: any = store.databasePerkara[activeIdx];
   let num = getTLNumFormat('KEP_BDN');
   let noSBP = rec.Nomor_SBP ? `SBP-${rec.Nomor_SBP}/MANDIRI/PATLA/KPU.2/2026` : 'SBP-338/MANDIRI/PATLA/KPU.2/2026';
   let noLP = rec.NoLP_LP_1 ? `LP-${rec.NoLP_LP_1}/PATLA/KPU.206/2026` : 'LP-338/PATLA/KPU.206/2026';
@@ -222,7 +229,7 @@ export function KEP_BDN() {
     { jumlah: '189 (seratus delapan puluh sembilan) koli', uraian: 'Beras merek “Harumas” 25 Kg', kondisi: 'Kurang Baik', asal: 'Tidak Teridentifikasi', ket: '-' }
   ];
 
-  let rowsLampiranHtml = listBarang.map((item, idx) => `
+  let rowsLampiranHtml = listBarang.map((item: any, idx: number) => `
     <tr>
       <td style="border:1px solid #000; padding:5px; text-align:center;">${idx + 1}.</td>
       <td style="border:1px solid #000; padding:5px; text-align:center;">${escText(item.jumlah)}</td>
@@ -321,9 +328,10 @@ export function KEP_BDN() {
   return `${lembarSatu}<div class="pagebreak"></div>${lampiranTabelBDN}`;
 }
 
-export function SPSA() {
-  if (store.activeRecordIndex < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
-  let rec = store.databasePerkara[store.activeRecordIndex];
+export function SPSA(): string {
+  let activeIdx = (store as any).activeRecordIndex;
+  if (activeIdx < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
+  let rec: any = store.databasePerkara[activeIdx];
 
   let ttdSPSA = `
     <div style="page-break-inside: avoid !important; display:flex; justify-content:flex-end; margin-top:16px;">
@@ -370,9 +378,10 @@ export function SPSA() {
   </div>`;
 }
 
-export function BAST_LIMPAH() {
-  if (store.activeRecordIndex < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
-  let rec = store.databasePerkara[store.activeRecordIndex];
+export function BAST_LIMPAH(): string {
+  let activeIdx = (store as any).activeRecordIndex;
+  if (activeIdx < 0) return `<div class="report"><p>Data belum dipilih.</p></div>`;
+  let rec: any = store.databasePerkara[activeIdx];
   let num = getTLNumFormat('BAST_LIMPAH');
   let hari = escText(rec.Limpah_Hari || 'Kamis');
   let tglHuruf = escText(rec.Limpah_Tgl_Huruf || 'dua belas Desember tahun dua ribu dua puluh enam');
@@ -420,7 +429,7 @@ export function BAST_LIMPAH() {
       ['Barang', 'Jml/No. Peti Kemas/Kemasan/ Jumlah/Jenis Barang', barang],
       ['Dokumen', 'Jenis/No. dan Tgl. Dokumen', dokumen],
       ['Orang', 'Nama & No. Identitas', `${namaOrang} (No. Identitas: ${nikOrang})`],
-      ['Diserahkan kepada', 'Nama / NIP / Alamat', `${pejabatPenerima} (NIP: ${nipPenerima})`],
+      ['Diserahkan kepada', 'Nama / NIP / Alamat', `${pejabatPenerima} (NIP:${nipPenerima})`],
       ['Instansi Penerima', 'Menerima atas nama', instansi],
       ['Maksud Penyerahan', 'Rangka Kegiatan', 'Pelimpahan Penanganan Perkara Penindakan oleh KPU Bea dan Cukai Tipe B Batam agar ditindaklanjuti oleh pihak berwenang.']
     ])}
