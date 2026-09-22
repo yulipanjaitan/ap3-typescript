@@ -2,173 +2,193 @@ import { store, savePerkaraToStorage } from '../state/store.js';
 import { escText, getVal, formatDate, formatDateIndo, formatModusVerb } from '../utils/formatters.js';
 import { showToast } from '../modules/ui.js';
 export function getDocNum(id) {
-  let el = document.getElementById(id);
-  return el ? el.value.trim() : '';
+    let el = document.getElementById(id);
+    return el ? el.value.trim() : '';
 }
 export function fmtLP() {
-  let val = getDocNum('No_LPP') || getVal('NoLP_LP_1');
-  return val && val !== '-' ? `LPP-${val}/KPU.206/2026` : 'LPP-/KPU.206/2026';
+    let val = getDocNum('No_LPP') || getVal('NoLP_LP_1');
+    return (val && val !== '-') ? `LPP-${val}/KPU.206/2026` : 'LPP-/KPU.206/2026';
 }
 export function fmtLPF() {
-  let val = getDocNum('No_LPF') || getVal('NoLP_LP_1');
-  return val && val !== '-' ? `LPF-${val}/KPU.206/2026` : 'LPF-/KPU.206/2026';
+    let val = getDocNum('No_LPF') || getVal('NoLP_LP_1');
+    return (val && val !== '-') ? `LPF-${val}/KPU.206/2026` : 'LPF-/KPU.206/2026';
 }
 export function fmtSBP() {
-  let val = getVal('Nomor_SBP');
-  let status = getVal('Status_Penangkapan');
-  let tipe = status.toUpperCase().includes('LIMPAHAN') ? 'LIMPAH' : 'MANDIRI';
-  return val && val !== '-' ? `SBP-${val}/${tipe}/KPU.2/2026` : `SBP-/${tipe}/KPU.2/2026`;
+    let val = getVal('Nomor_SBP');
+    let status = getVal('Status_Penangkapan');
+    let tipe = status.toUpperCase().includes('LIMPAHAN') ? 'LIMPAH' : 'MANDIRI';
+    return (val && val !== '-') ? `SBP-${val}/${tipe}/KPU.2/2026` : `SBP-/${tipe}/KPU.2/2026`;
 }
 export function fmtSprinIndak() {
-  let val = getVal('No_SPRIN_Indak');
-  let tgl = formatDate('Tanggal_SPRIN_Indak');
-  if (val && val !== '-') {
-    let sprinPad = val.length < 2 ? String(val).padStart(2, '0') : val;
-    let noFormatted = `SPRIN-${sprinPad}/KPU.206/2026`;
-    return tgl !== '-' ? `${noFormatted} tanggal ${tgl}` : noFormatted;
-  }
-  return '-';
+    let val = getVal('No_SPRIN_Indak');
+    let tgl = formatDate('Tanggal_SPRIN_Indak');
+    if (val && val !== '-') {
+        let sprinPad = val.length < 2 ? String(val).padStart(2, '0') : val;
+        let noFormatted = `SPRIN-${sprinPad}/KPU.206/2026`;
+        return tgl !== '-' ? `${noFormatted} tanggal ${tgl}` : noFormatted;
+    }
+    return '-';
 }
 export function fmtPrintCacah() {
-  let val = getDocNum('No_SPRIN_CACAH');
-  return val && val !== '-' ? `PRIN-${val}/KPU.206/CACAH/2026` : 'PRIN-/KPU.206/CACAH/2026';
+    let val = getDocNum('No_SPRIN_CACAH');
+    return (val && val !== '-') ? `PRIN-${val}/KPU.206/CACAH/2026` : 'PRIN-/KPU.206/CACAH/2026';
 }
 export function fmtSplit() {
-  let val = getDocNum('Nomor_SPLIT');
-  return val && val !== '-' ? `SPLIT-${val}/KPU.206/2026` : 'SPLIT-/KPU.206/2026';
+    let val = getDocNum('Nomor_SPLIT');
+    return (val && val !== '-') ? `SPLIT-${val}/KPU.206/2026` : 'SPLIT-/KPU.206/2026';
 }
 export function fmtBA() {
-  let val = getDocNum('Nomor_BA');
-  return val && val !== '-' ? `BA-${val}/KPU.206/CACAH/2026` : 'BA-/KPU.206/CACAH/2026';
+    let val = getDocNum('Nomor_BA');
+    return (val && val !== '-') ? `BA-${val}/KPU.206/CACAH/2026` : 'BA-/KPU.206/CACAH/2026';
 }
 export function fmtLHP() {
-  let val = getDocNum('Nomor_LHP');
-  return val && val !== '-' ? `LHP-${val}/KPU.206/2026` : 'LHP-/KPU.206/2026';
+    let val = getDocNum('Nomor_LHP');
+    return (val && val !== '-') ? `LHP-${val}/KPU.206/2026` : 'LHP-/KPU.206/2026';
 }
 export function syncLPToDocs(val) {
-  if (!document.getElementById('No_LPP').value) document.getElementById('No_LPP').value = val;
-  if (!document.getElementById('No_LPF').value) document.getElementById('No_LPF').value = val;
-  if (window.refreshReportTableUI) window.refreshReportTableUI();
-  if (window.updateReportLive) window.updateReportLive();
+    let noLpp = document.getElementById('No_LPP');
+    let noLpf = document.getElementById('No_LPF');
+    if (noLpp && !noLpp.value)
+        noLpp.value = val;
+    if (noLpf && !noLpf.value)
+        noLpf.value = val;
+    if (typeof window.refreshReportTableUI === 'function')
+        window.refreshReportTableUI();
+    if (typeof window.updateReportLive === 'function')
+        window.updateReportLive();
 }
 export function officeHeader(isBA = false) {
-  return `<div class="office-left" style="font-family: Arial, Helvetica, sans-serif !important; font-weight: bold; font-size: 10pt; line-height: 1.3;">KEMENTERIAN KEUANGAN REPUBLIK INDONESIA<br>DIREKTORAT JENDERAL BEA DAN CUKAI<br>KANTOR PELAYANAN UTAMA BEA DAN CUKAI TIPE B BATAM</div>`;
+    return `<div class="office-left" style="font-family: Arial, Helvetica, sans-serif !important; font-weight: bold; font-size: 10pt; line-height: 1.3;">KEMENTERIAN KEUANGAN REPUBLIK INDONESIA<br>DIREKTORAT JENDERAL BEA DAN CUKAI<br>KANTOR PELAYANAN UTAMA BEA DAN CUKAI TIPE B BATAM</div>`;
 }
 export function tteBadge() {
-  return `<div class="tte-badge" style="font-size:8.5pt; color:#9ca3af !important; margin:3px 0 2px 0; font-style:normal; font-weight:normal; text-align:left; letter-spacing:0.01em;">Ditandatangani secara elektronik</div>`;
+    return `<div class="tte-badge" style="font-size:8.5pt; color:#9ca3af !important; margin:3px 0 2px 0; font-style:normal; font-weight:normal; text-align:left; letter-spacing:0.01em;">Ditandatangani secara elektronik</div>`;
 }
 export function baseReport(title, no, isBA = false) {
-  return `<div class="report" style="font-family: Arial, Helvetica, sans-serif !important; font-size: 10pt; color: #000 !important; line-height: 1.3;">
+    return `<div class="report" style="font-family: Arial, Helvetica, sans-serif !important; font-size: 10pt; color: #000 !important; line-height: 1.3;">
     ${officeHeader(isBA)}
     <div class="title-center" style="font-family: Arial, Helvetica, sans-serif; text-align:center; font-weight:bold; font-size:11.5pt; margin:14px 0 4px 0;">${title}</div>
     <div class="nomor-center" style="font-family: Arial, Helvetica, sans-serif; text-align:center; margin-bottom:16px;">Nomor : ${no}</div>`;
 }
 export function buildTableKv(rows) {
-  return `<table class="rtable" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif;">${rows.map(r => {
-    if (r.length === 3) {
-      return `<tr>
+    return `<table class="rtable" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif;">${rows.map(r => {
+        if (r.length === 3) {
+            return `<tr>
         <td style="width:4%; vertical-align:top;">${r[0]}</td>
         <td style="width:28%; vertical-align:top;">${r[1]}</td>
         <td style="width:3%; text-align:center; vertical-align:top;">${r[1] ? ':' : ''}</td>
         <td style="text-align:justify; vertical-align:top;">${r[2] || '-'}</td>
       </tr>`;
-    } else {
-      return `<tr>
+        }
+        else {
+            return `<tr>
         <td style="width:32%; vertical-align:top;">${r[0]}</td>
         <td style="width:3%; text-align:center; vertical-align:top;">:</td>
         <td style="text-align:justify; vertical-align:top;">${r[1] || '-'}</td>
       </tr>`;
-    }
-  }).join('')}</table>`;
+        }
+    }).join('')}</table>`;
 }
 export function handleSingleValidation() {
-  if ((typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0) && store.databasePerkara.length > 0) {
-    store.activeRecordIndex = 0;
-  }
-  if (typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0 || !store.databasePerkara[store.activeRecordIndex]) {
-    showToast("INFORMASI", "Belum ada data perkara untuk divalidasi.", "warning");
-    return;
-  }
-  let activeRecord = store.databasePerkara[store.activeRecordIndex];
-  let noLp = activeRecord.NoLP_LP_1 || '';
-  let docTypes = ['LPP', 'LPF', 'SPLIT', 'SPRIN_CACAH', 'BA', 'LHP'];
-  docTypes.forEach(type => {
-    if (type === 'LPP') {
-      activeRecord.No_LPP = noLp.replace(/^LP/i, 'LPP');
-      activeRecord.Tanggal_LPP = activeRecord.Tanggal_LPP || activeRecord.Tanggal_LP_LP_1;
-    } else if (type === 'LPF') {
-      activeRecord.No_LPF = noLp.replace(/^LP/i, 'LPF');
-      activeRecord.Tanggal_LPF = activeRecord.Tanggal_LPF || activeRecord.Tanggal_LP_LP_1;
-    } else if (type === 'SPLIT') {
-      activeRecord.Nomor_SPLIT = noLp.replace(/^LP/i, 'SPLIT');
-      activeRecord.Tanggal_SPLIT = activeRecord.Tanggal_SPLIT || activeRecord.Tanggal_LP_LP_1;
-    } else if (type === 'SPRIN_CACAH' && !activeRecord.No_SPRIN_CACAH) {
-      activeRecord.No_SPRIN_CACAH = noLp;
-      activeRecord.Tanggal_SPRIN_CACAH = activeRecord.Tanggal_SBP || activeRecord.Tanggal_LP_LP_1;
-    } else if (type === 'BA' && !activeRecord.Nomor_BA) {
-      activeRecord.Nomor_BA = noLp;
-      activeRecord.Tanggal_BA = activeRecord.Tanggal_SBP || activeRecord.Tanggal_LP_LP_1;
-    } else if (type === 'LHP') {
-      activeRecord.No_LHP = noLp.replace(/^LP/i, 'LHP');
-      activeRecord.Tanggal_LHP = activeRecord.Tanggal_LHP || activeRecord.Tanggal_LP_LP_1;
+    if ((typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0) && store.databasePerkara.length > 0) {
+        store.activeRecordIndex = 0;
     }
-  });
-  savePerkaraToStorage();
-  let existingToast = document.getElementById('customToastNotification');
-  if (!existingToast) {
-    let toastDiv = document.createElement('div');
-    toastDiv.id = 'customToastNotification';
-    toastDiv.innerHTML = `<i class="fi fi-rr-check-circle" style="color: #22c55e; margin-right: 8px;"></i><span id="toastMessage">Sudah divalidasi dan disinkronkan!</span>`;
-    toastDiv.style.cssText = "position: fixed; bottom: 20px; right: 20px; background: #0f172a; color: #ffffff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; z-index: 9999; font-size: 14px; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; transform: translateY(20px); border-left: 4px solid #10b981;";
-    document.body.appendChild(toastDiv);
-    existingToast = toastDiv;
-  } else {
-    document.getElementById('toastMessage').innerText = "Sudah divalidasi dan disinkronkan!";
-  }
-  setTimeout(() => {
-    existingToast.style.opacity = '1';
-    existingToast.style.transform = 'translateY(0)';
-  }, 10);
-  setTimeout(() => {
-    existingToast.style.opacity = '0';
-    existingToast.style.transform = 'translateY(20px)';
-  }, 3000);
-  if (typeof window.refreshReportTableUI === 'function') {
-    window.refreshReportTableUI();
-  }
+    if (typeof store.activeRecordIndex === 'undefined' || store.activeRecordIndex < 0 || !store.databasePerkara[store.activeRecordIndex]) {
+        showToast("INFORMASI", "Belum ada data perkara untuk divalidasi.", "warning");
+        return;
+    }
+    let activeRecord = store.databasePerkara[store.activeRecordIndex];
+    let noLp = activeRecord.NoLP_LP_1 || '';
+    let docTypes = ['LPP', 'LPF', 'SPLIT', 'SPRIN_CACAH', 'BA', 'LHP'];
+    docTypes.forEach(type => {
+        if (type === 'LPP') {
+            activeRecord.No_LPP = noLp.replace(/^LP/i, 'LPP');
+            activeRecord.Tanggal_LPP = activeRecord.Tanggal_LPP || activeRecord.Tanggal_LP_LP_1;
+        }
+        else if (type === 'LPF') {
+            activeRecord.No_LPF = noLp.replace(/^LP/i, 'LPF');
+            activeRecord.Tanggal_LPF = activeRecord.Tanggal_LPF || activeRecord.Tanggal_LP_LP_1;
+        }
+        else if (type === 'SPLIT') {
+            activeRecord.Nomor_SPLIT = noLp.replace(/^LP/i, 'SPLIT');
+            activeRecord.Tanggal_SPLIT = activeRecord.Tanggal_SPLIT || activeRecord.Tanggal_LP_LP_1;
+        }
+        else if (type === 'SPRIN_CACAH' && !activeRecord.No_SPRIN_CACAH) {
+            activeRecord.No_SPRIN_CACAH = noLp;
+            activeRecord.Tanggal_SPRIN_CACAH = activeRecord.Tanggal_SBP || activeRecord.Tanggal_LP_LP_1;
+        }
+        else if (type === 'BA' && !activeRecord.Nomor_BA) {
+            activeRecord.Nomor_BA = noLp;
+            activeRecord.Tanggal_BA = activeRecord.Tanggal_SBP || activeRecord.Tanggal_LP_LP_1;
+        }
+        else if (type === 'LHP') {
+            activeRecord.No_LHP = noLp.replace(/^LP/i, 'LHP');
+            activeRecord.Tanggal_LHP = activeRecord.Tanggal_LHP || activeRecord.Tanggal_LP_LP_1;
+        }
+    });
+    savePerkaraToStorage();
+    let existingToast = document.getElementById('customToastNotification');
+    if (!existingToast) {
+        let toastDiv = document.createElement('div');
+        toastDiv.id = 'customToastNotification';
+        toastDiv.innerHTML = `<i class="fi fi-rr-check-circle" style="color: #22c55e; margin-right: 8px;"></i><span id="toastMessage">Sudah divalidasi dan disinkronkan!</span>`;
+        toastDiv.style.cssText = "position: fixed; bottom: 20px; right: 20px; background: #0f172a; color: #ffffff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; z-index: 9999; font-size: 14px; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; transform: translateY(20px); border-left: 4px solid #10b981;";
+        document.body.appendChild(toastDiv);
+        existingToast = toastDiv;
+    }
+    else {
+        let msgEl = document.getElementById('toastMessage');
+        if (msgEl)
+            msgEl.innerText = "Sudah divalidasi dan disinkronkan!";
+    }
+    setTimeout(() => {
+        existingToast.style.opacity = '1';
+        existingToast.style.transform = 'translateY(0)';
+    }, 10);
+    setTimeout(() => {
+        existingToast.style.opacity = '0';
+        existingToast.style.transform = 'translateY(20px)';
+    }, 3000);
+    if (typeof window.refreshReportTableUI === 'function') {
+        window.refreshReportTableUI();
+    }
 }
 export function LPP() {
-  let tglLPP = formatDate('Tanggal_LPP') !== '-' ? formatDate('Tanggal_LPP') : formatDate('Tanggal_LP_LP_1');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
-  let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
-  let umurVal = getVal('Umur_Pelaku');
-  let umurFormatted = umurVal !== '-' && umurVal !== '' ? umurVal + ' tahun' : '-';
-  let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
-  let dokPabVal = getVal('Dokumen_Pemberitahuan');
-  let dokPabDisplay = 'Tanpa Dokumen';
-  if (!dokPabVal.toLowerCase().includes('tanpa dokumen') && dokPabVal && dokPabVal !== '-') {
-    let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select') ? document.getElementById('Jenis_Dok_Pemberitahuan_Select').value : '';
-    let jenisDok = selJenis === 'LAINNYA' ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual') ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual').value.trim() : '' : selJenis !== '-' ? selJenis : '';
-    let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan') ? document.getElementById('Nomor_Dok_Pemberitahuan').value.trim() : '';
-    let rawString = (jenisDok ? jenisDok + ' ' : '') + (nomorDok ? nomorDok : dokPabVal);
-    rawString = rawString.trim().replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '');
-    let matchBC = rawString.match(/^(BC\s*\d+(?:\.\d+)?|[A-Z]{2,10})\s*(?:nomor\s+|no\.?\s+)?(.*)$/i);
-    let finalDokText = '';
-    if (matchBC && matchBC[2].trim()) {
-      let jns = matchBC[1].trim();
-      let no = matchBC[2].trim();
-      finalDokText = `${escText(jns)} nomor ${escText(no)}`;
-    } else if (rawString.toLowerCase().includes('nomor')) {
-      finalDokText = escText(rawString);
-    } else {
-      finalDokText = `nomor ${escText(rawString)}`;
+    let tglLPP = formatDate('Tanggal_LPP') !== '-' ? formatDate('Tanggal_LPP') : formatDate('Tanggal_LP_LP_1');
+    let rawJam = document.getElementById('Jam_Kejadian')?.value.trim() || '';
+    let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
+    let umurVal = getVal('Umur_Pelaku');
+    let umurFormatted = (umurVal !== '-' && umurVal !== '') ? umurVal + ' tahun' : '-';
+    let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
+    let dokPabVal = getVal('Dokumen_Pemberitahuan');
+    let dokPabDisplay = 'Tanpa Dokumen';
+    if (!dokPabVal.toLowerCase().includes('tanpa dokumen') && dokPabVal && dokPabVal !== '-') {
+        let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select')?.value || '';
+        let jenisDok = selJenis === 'LAINNYA'
+            ? (document.getElementById('Jenis_Dok_Pemberitahuan_Manual')?.value.trim() || '')
+            : (selJenis !== '-' ? selJenis : '');
+        let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan')?.value.trim() || '';
+        let rawString = (jenisDok ? jenisDok + ' ' : '') + (nomorDok ? nomorDok : dokPabVal);
+        rawString = rawString.trim().replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '');
+        let matchBC = rawString.match(/^(BC\s*\d+(?:\.\d+)?|[A-Z]{2,10})\s*(?:nomor\s+|no\.?\s+)?(.*)$/i);
+        let finalDokText = '';
+        if (matchBC && matchBC[2].trim()) {
+            let jns = matchBC[1].trim();
+            let no = matchBC[2].trim();
+            finalDokText = `${escText(jns)} nomor ${escText(no)}`;
+        }
+        else if (rawString.toLowerCase().includes('nomor')) {
+            finalDokText = escText(rawString);
+        }
+        else {
+            finalDokText = `nomor ${escText(rawString)}`;
+        }
+        if (tglDokPab && tglDokPab !== '-') {
+            finalDokText += ` tanggal ${tglDokPab}`;
+        }
+        dokPabDisplay = finalDokText;
     }
-    if (tglDokPab && tglDokPab !== '-') {
-      finalDokText += ` tanggal ${tglDokPab}`;
-    }
-    dokPabDisplay = finalDokText;
-  }
-  return baseReport('LEMBAR PENERIMAAN PERKARA (LPP)', fmtLP(), false) + `<!-- HEADER ATAS -->
+    return baseReport('LEMBAR PENERIMAAN PERKARA (LPP)', fmtLP(), false) +
+        `<!-- HEADER ATAS -->
   <table class="rtable" style="width:100%; border-collapse:collapse; margin-bottom:12px; font-family:Arial, sans-serif; font-size:10pt; line-height:1.35; table-layout:fixed;">
     <colgroup>
       <col style="width:115px;">
@@ -386,31 +406,33 @@ export function LPP() {
   </div></div>`;
 }
 export function LPF() {
-  let tglLPF = formatDate('Tanggal_LPF') !== '-' ? formatDate('Tanggal_LPF') : formatDate('Tanggal_LP_LP_1');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
-  let jamFormatted = rawJam ? rawJam.replace(':', '.') : '-';
-  let umurVal = getVal('Umur_Pelaku');
-  let umurFormatted = umurVal !== '-' && umurVal !== '' ? umurVal + ' tahun' : '-';
-  let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
-  let dokPabVal = getVal('Dokumen_Pemberitahuan');
-  let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select') ? document.getElementById('Jenis_Dok_Pemberitahuan_Select').value : '';
-  let jenisDokManual = document.getElementById('Jenis_Dok_Pemberitahuan_Manual') ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual').value.trim() : '';
-  let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan') ? document.getElementById('Nomor_Dok_Pemberitahuan').value.trim() : '';
-  let jenisDokPabeanDisplay = '-';
-  let nomorDokPabeanDisplay = '-';
-  if (dokPabVal.toLowerCase().includes('tanpa dokumen') || selJenis === 'Tanpa Dokumen' || !dokPabVal || dokPabVal === '-') {
-    jenisDokPabeanDisplay = 'Tanpa Dokumen';
-    nomorDokPabeanDisplay = '-';
-  } else {
-    jenisDokPabeanDisplay = selJenis === 'LAINNYA' ? jenisDokManual || 'Lainnya' : selJenis !== '-' ? selJenis : 'BC 2.0';
-    if (nomorDok) {
-      nomorDokPabeanDisplay = escText(nomorDok);
-    } else {
-      let rawClean = dokPabVal.replace(/^(BC\s*\d+(?:\.\d+)?|[A-Z]{2,10})/i, '').replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '').trim();
-      nomorDokPabeanDisplay = escText(rawClean || '-');
+    let tglLPF = formatDate('Tanggal_LPF') !== '-' ? formatDate('Tanggal_LPF') : formatDate('Tanggal_LP_LP_1');
+    let rawJam = document.getElementById('Jam_Kejadian')?.value.trim() || '';
+    let jamFormatted = rawJam ? rawJam.replace(':', '.') : '-';
+    let umurVal = getVal('Umur_Pelaku');
+    let umurFormatted = (umurVal !== '-' && umurVal !== '') ? umurVal + ' tahun' : '-';
+    let dokPabVal = getVal('Dokumen_Pemberitahuan');
+    let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select')?.value || '';
+    let jenisDokManual = document.getElementById('Jenis_Dok_Pemberitahuan_Manual')?.value.trim() || '';
+    let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan')?.value.trim() || '';
+    let jenisDokPabeanDisplay = '-';
+    let nomorDokPabeanDisplay = '-';
+    if (dokPabVal.toLowerCase().includes('tanpa dokumen') || selJenis === 'Tanpa Dokumen' || !dokPabVal || dokPabVal === '-') {
+        jenisDokPabeanDisplay = 'Tanpa Dokumen';
+        nomorDokPabeanDisplay = '-';
     }
-  }
-  return baseReport('LEMBAR PENELITIAN FORMAL (LPF)', fmtLPF(), false) + `<table class="rtable" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:10pt; line-height:1.35; table-layout:fixed;">
+    else {
+        jenisDokPabeanDisplay = selJenis === 'LAINNYA' ? (jenisDokManual || 'Lainnya') : (selJenis !== '-' ? selJenis : 'BC 2.0');
+        if (nomorDok) {
+            nomorDokPabeanDisplay = escText(nomorDok);
+        }
+        else {
+            let rawClean = dokPabVal.replace(/^(BC\s*\d+(?:\.\d+)?|[A-Z]{2,10})/i, '').replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '').trim();
+            nomorDokPabeanDisplay = escText(rawClean || '-');
+        }
+    }
+    return baseReport('LEMBAR PENELITIAN FORMAL (LPF)', fmtLPF(), false) +
+        `<table class="rtable" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:10pt; line-height:1.35; table-layout:fixed;">
     <colgroup>
       <col style="width:24px;">
       <col style="width:20px;">
@@ -626,7 +648,7 @@ export function LPF() {
       <td></td>
       <td style="vertical-align:top;">Tanggal</td>
       <td style="text-align:center; vertical-align:top;">:</td>
-      <td style="text-align:justify; vertical-align:top;">${tglDokPab}</td>
+      <td style="text-align:justify; vertical-align:top;">${formatDate('Tanggal_Dokumen_Pemberitahuan')}</td>
     </tr>
 
     <tr>
@@ -710,37 +732,22 @@ export function LPF() {
   </div></div>`;
 }
 export function SPLIT() {
-  let tglSplit = formatDate('Tanggal_SPLIT') !== '-' ? formatDate('Tanggal_SPLIT') : formatDate('Tanggal_LP_LP_1');
-  let hari = getVal('Hari_SBP');
-  let tglIndo = formatDate('Tanggal_SBP');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
-  let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
-  let lokasi = getVal('Lokasi_Penindakan');
-  let rawModus = getVal('Modus_Operandi');
-  let modusVerb = formatModusVerb(rawModus);
-  let uraianPerkaraSplit = `Pada hari ${hari}, tanggal ${tglIndo} sekitar pukul ${jamFormatted} di ${lokasi} yang dilakukan penindakan oleh Petugas Bea Cukai Batam yang ${modusVerb}`;
-  let pegawai = [{
-    nama: getVal('form_ketua_tim'),
-    nip: getVal('form_nip_ketua_tim'),
-    pkt: getVal('form_gol_ketua_tim'),
-    jab: getVal('form_jabatan_ketua_tim') || 'Ketua Tim Peneliti'
-  }, {
-    nama: getVal('form_pembuat_lpp'),
-    nip: getVal('form_nip_pembuat_lpp'),
-    pkt: getVal('form_gol_pembuat_lpp'),
-    jab: getVal('form_jabatan_pembuat_lpp') || 'Anggota Tim Peneliti'
-  }, {
-    nama: getVal('form_petugas_lpf'),
-    nip: getVal('form_nip_petugas_lpf'),
-    pkt: getVal('form_gol_petugas_lpf'),
-    jab: getVal('form_jabatan_petugas_lpf') || 'Anggota Tim Peneliti'
-  }, {
-    nama: getVal('form_indak_1'),
-    nip: getVal('form_nip_indak_1'),
-    pkt: getVal('form_gol_indak_1'),
-    jab: getVal('form_jabatan_indak_1') || 'Anggota Tim Peneliti'
-  }];
-  let pegawaiHtml = pegawai.map((p, i) => `
+    let tglSplit = formatDate('Tanggal_SPLIT') !== '-' ? formatDate('Tanggal_SPLIT') : formatDate('Tanggal_LP_LP_1');
+    let hari = getVal('Hari_SBP');
+    let tglIndo = formatDate('Tanggal_SBP');
+    let rawJam = document.getElementById('Jam_Kejadian')?.value.trim() || '';
+    let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
+    let lokasi = getVal('Lokasi_Penindakan');
+    let rawModus = getVal('Modus_Operandi');
+    let modusVerb = formatModusVerb(rawModus);
+    let uraianPerkaraSplit = `Pada hari ${hari}, tanggal ${tglIndo} sekitar pukul ${jamFormatted} di ${lokasi} yang dilakukan penindakan oleh Petugas Bea Cukai Batam yang ${modusVerb}`;
+    let pegawai = [
+        { nama: getVal('form_ketua_tim'), nip: getVal('form_nip_ketua_tim'), pkt: getVal('form_gol_ketua_tim'), jab: getVal('form_jabatan_ketua_tim') || 'Ketua Tim Peneliti' },
+        { nama: getVal('form_pembuat_lpp'), nip: getVal('form_nip_pembuat_lpp'), pkt: getVal('form_gol_pembuat_lpp'), jab: getVal('form_jabatan_pembuat_lpp') || 'Anggota Tim Peneliti' },
+        { nama: getVal('form_petugas_lpf'), nip: getVal('form_nip_petugas_lpf'), pkt: getVal('form_gol_petugas_lpf'), jab: getVal('form_jabatan_petugas_lpf') || 'Anggota Tim Peneliti' },
+        { nama: getVal('form_indak_1'), nip: getVal('form_nip_indak_1'), pkt: getVal('form_gol_indak_1'), jab: getVal('form_jabatan_indak_1') || 'Anggota Tim Peneliti' }
+    ];
+    let pegawaiHtml = pegawai.map((p, i) => `
     <table style="width:100%; border:none; margin-bottom:3px; border-collapse:collapse; font-size:10pt;">
       <tr><td style="width:25px; vertical-align:top;">${i + 1}.</td><td style="width:110px; vertical-align:top;">Nama</td><td style="width:15px; text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;"><b>${escText(p.nama)}</b></td></tr>
       <tr><td></td><td style="vertical-align:top;">NIP</td><td style="text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;">${escText(p.nip)}</td></tr>
@@ -748,7 +755,8 @@ export function SPLIT() {
       <tr><td></td><td style="vertical-align:top;">Jabatan</td><td style="text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;">${escText(p.jab)}</td></tr>
     </table>
   `).join('');
-  return baseReport('SURAT PERINTAH PENELITIAN (SPLIT)', fmtSplit(), false) + `<table class="rtable" style="width:100%; border-collapse:collapse; font-size:10pt; line-height:1.3;">
+    return baseReport('SURAT PERINTAH PENELITIAN (SPLIT)', fmtSplit(), false) +
+        `<table class="rtable" style="width:100%; border-collapse:collapse; font-size:10pt; line-height:1.3;">
     <tr>
       <td style="width:110px; vertical-align:top;"><b>Dasar</b></td>
       <td style="width:15px; text-align:center; vertical-align:top;">:</td>
@@ -818,32 +826,17 @@ export function SPLIT() {
   </div></div>`;
 }
 export function SPRIN_CACAH() {
-  let tglSprin = formatDate('Tanggal_Sprin_Cacah') !== '-' ? formatDate('Tanggal_Sprin_Cacah') : formatDate('Tanggal_SBP');
-  let listPegawai = JSON.parse(localStorage.getItem('sprinPegawaiList') || '[]');
-  if (listPegawai.length === 0) {
-    listPegawai = [{
-      nama: getVal('form_ketua_tim'),
-      nip: getVal('form_nip_ketua_tim'),
-      pangkat: getVal('form_gol_ketua_tim'),
-      jabatan: getVal('form_jabatan_ketua_tim') || 'Ketua Tim Peneliti'
-    }, {
-      nama: getVal('form_pembuat_lpp'),
-      nip: getVal('form_nip_pembuat_lpp'),
-      pangkat: getVal('form_gol_pembuat_lpp'),
-      jabatan: getVal('form_jabatan_pembuat_lpp') || 'Petugas LPP'
-    }, {
-      nama: getVal('form_petugas_lpf'),
-      nip: getVal('form_nip_petugas_lpf'),
-      pangkat: getVal('form_gol_petugas_lpf'),
-      jabatan: getVal('form_jabatan_petugas_lpf') || 'Petugas LPF'
-    }, {
-      nama: getVal('form_indak_1'),
-      nip: getVal('form_nip_indak_1'),
-      pangkat: getVal('form_gol_indak_1'),
-      jabatan: getVal('form_jabatan_indak_1') || 'Petugas Penindakan 1'
-    }];
-  }
-  let pegawaiHtml = listPegawai.map((p, i) => `
+    let tglSprin = formatDate('Tanggal_Sprin_Cacah') !== '-' ? formatDate('Tanggal_Sprin_Cacah') : formatDate('Tanggal_SBP');
+    let listPegawai = JSON.parse(localStorage.getItem('sprinPegawaiList') || '[]');
+    if (listPegawai.length === 0) {
+        listPegawai = [
+            { nama: getVal('form_ketua_tim'), nip: getVal('form_nip_ketua_tim'), pangkat: getVal('form_gol_ketua_tim'), jabatan: getVal('form_jabatan_ketua_tim') || 'Ketua Tim Peneliti' },
+            { nama: getVal('form_pembuat_lpp'), nip: getVal('form_nip_pembuat_lpp'), pangkat: getVal('form_gol_pembuat_lpp'), jabatan: getVal('form_jabatan_pembuat_lpp') || 'Petugas LPP' },
+            { nama: getVal('form_petugas_lpf'), nip: getVal('form_nip_petugas_lpf'), pangkat: getVal('form_gol_petugas_lpf'), jabatan: getVal('form_jabatan_petugas_lpf') || 'Petugas LPF' },
+            { nama: getVal('form_indak_1'), nip: getVal('form_nip_indak_1'), pangkat: getVal('form_gol_indak_1'), jabatan: getVal('form_jabatan_indak_1') || 'Petugas Penindakan 1' }
+        ];
+    }
+    let pegawaiHtml = listPegawai.map((p, i) => `
     <table style="width:100%; border:none; margin-bottom:3px; border-collapse:collapse; font-size:10pt;">
       <tr><td style="width:25px; vertical-align:top;">${i + 1}.</td><td style="width:110px; vertical-align:top;">Nama</td><td style="width:15px; text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;"><b>${escText(p.nama)}</b></td></tr>
       <tr><td></td><td style="vertical-align:top;">NIP</td><td style="text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;">${escText(p.nip)}</td></tr>
@@ -851,7 +844,8 @@ export function SPRIN_CACAH() {
       <tr><td></td><td style="vertical-align:top;">Jabatan</td><td style="text-align:center; vertical-align:top;">:</td><td style="vertical-align:top;">${escText(p.jabatan || p.jab || '-')}</td></tr>
     </table>
   `).join('');
-  return baseReport('SURAT PERINTAH PENCACAHAN BARANG HASIL PENINDAKAN', fmtPrintCacah(), false) + `<table class="rtable" style="width:100%; border-collapse:collapse; font-size:10pt; line-height:1.3;">
+    return baseReport('SURAT PERINTAH PENCACAHAN BARANG HASIL PENINDAKAN', fmtPrintCacah(), false) +
+        `<table class="rtable" style="width:100%; border-collapse:collapse; font-size:10pt; line-height:1.3;">
     <tr>
       <td style="width:110px; vertical-align:top;"><b>Dasar</b></td>
       <td style="width:15px; text-align:center; vertical-align:top;">:</td>
@@ -909,97 +903,38 @@ export function SPRIN_CACAH() {
   </div></div>`;
 }
 export function BA() {
-  let paperLandscapeClass = store.selectedPaperSize === 'A4' ? 'report landscape paper-a4' : 'report landscape';
-  let items = JSON.parse(localStorage.getItem('cacahItems') || '[]');
-  let hariCacah = (getVal('Hari_Cacah') || '-').toLowerCase();
-  let teksTgl = (getVal('TeksTanggal') || '-').toLowerCase();
-  let tglSprin = formatDate('Tanggal_Sprin_Cacah') !== '-' ? formatDate('Tanggal_Sprin_Cacah') : formatDate('Tanggal_SBP');
-  let noSprin = fmtPrintCacah();
-  let noSBP = fmtSBP();
-  let lokasi = escText(getVal('Lokasi_Penindakan'));
-  let tglBA = formatDate('Tanggal_BA') !== '-' ? formatDate('Tanggal_BA') : formatDate('Tanggal_SBP');
-  let noBA = fmtBA();
-  let listPegawai = JSON.parse(localStorage.getItem('sprinPegawaiList') || '[]');
-  let p1, p2, p3, p4, p5, p6;
-  if (listPegawai.length >= 6) {
-    p1 = {
-      nama: listPegawai[0].nama,
-      nip: listPegawai[0].nip,
-      pkt: listPegawai[0].pangkat || listPegawai[0].pkt,
-      jab: listPegawai[0].jabatan || listPegawai[0].jab
-    };
-    p2 = {
-      nama: listPegawai[1].nama,
-      nip: listPegawai[1].nip,
-      pkt: listPegawai[1].pangkat || listPegawai[1].pkt,
-      jab: listPegawai[1].jabatan || listPegawai[1].jab
-    };
-    p3 = {
-      nama: listPegawai[2].nama,
-      nip: listPegawai[2].nip,
-      pkt: listPegawai[2].pangkat || listPegawai[2].pkt,
-      jab: listPegawai[2].jabatan || listPegawai[2].jab
-    };
-    p4 = {
-      nama: listPegawai[3].nama,
-      nip: listPegawai[3].nip,
-      pkt: listPegawai[3].pangkat || listPegawai[3].pkt,
-      jab: listPegawai[3].jabatan || listPegawai[3].jab
-    };
-    p5 = {
-      nama: listPegawai[4].nama,
-      nip: listPegawai[4].nip,
-      pkt: listPegawai[4].pangkat || listPegawai[4].pkt,
-      jab: listPegawai[4].jabatan || listPegawai[4].jab
-    };
-    p6 = {
-      nama: listPegawai[5].nama,
-      nip: listPegawai[5].nip,
-      pkt: listPegawai[5].pangkat || listPegawai[5].pkt,
-      jab: listPegawai[5].jabatan || listPegawai[5].jab
-    };
-  } else {
-    p1 = {
-      nama: getVal('form_ketua_tim'),
-      nip: getVal('form_nip_ketua_tim'),
-      pkt: getVal('form_gol_ketua_tim'),
-      jab: getVal('form_jabatan_ketua_tim') || 'Ketua Tim Peneliti'
-    };
-    p2 = {
-      nama: getVal('form_pembuat_lpp'),
-      nip: getVal('form_nip_pembuat_lpp'),
-      pkt: getVal('form_gol_pembuat_lpp'),
-      jab: getVal('form_jabatan_pembuat_lpp') || 'Petugas LPP'
-    };
-    p3 = {
-      nama: getVal('form_petugas_lpf'),
-      nip: getVal('form_nip_petugas_lpf'),
-      pkt: getVal('form_gol_petugas_lpf'),
-      jab: getVal('form_jabatan_petugas_lpf') || 'Petugas LPF'
-    };
-    p4 = {
-      nama: getVal('form_indak_1'),
-      nip: getVal('form_nip_indak_1'),
-      pkt: getVal('form_gol_indak_1'),
-      jab: getVal('form_jabatan_indak_1') || 'Petugas Penindakan 1'
-    };
-    p5 = {
-      nama: getVal('form_indak_2'),
-      nip: getVal('form_nip_indak_2'),
-      pkt: getVal('form_gol_indak_2'),
-      jab: getVal('form_jabatan_indak_2') || 'Petugas Penindakan 2'
-    };
-    p6 = {
-      nama: getVal('form_indak_lainnya'),
-      nip: getVal('form_nip_indak_lainnya'),
-      pkt: getVal('form_gol_indak_lainnya'),
-      jab: getVal('form_jabatan_indak_lainnya') || 'Petugas Penindakan 3'
-    };
-  }
-  let timPeneliti = [p1, p2, p3];
-  let timPenindakan = [p4, p5, p6];
-  let allPetugas = [p1, p2, p3, p4, p5, p6];
-  let renderTabelPegawai = list => list.map((p, idx) => `
+    let paperLandscapeClass = store.selectedPaperSize === 'A4' ? 'report landscape paper-a4' : 'report landscape';
+    let items = JSON.parse(localStorage.getItem('cacahItems') || '[]');
+    let hariCacah = (getVal('Hari_Cacah') || '-').toLowerCase();
+    let teksTgl = (getVal('TeksTanggal') || '-').toLowerCase();
+    let tglSprin = formatDate('Tanggal_Sprin_Cacah') !== '-' ? formatDate('Tanggal_Sprin_Cacah') : formatDate('Tanggal_SBP');
+    let noSprin = fmtPrintCacah();
+    let noSBP = fmtSBP();
+    let lokasi = escText(getVal('Lokasi_Penindakan'));
+    let tglBA = formatDate('Tanggal_BA') !== '-' ? formatDate('Tanggal_BA') : formatDate('Tanggal_SBP');
+    let noBA = fmtBA();
+    let listPegawai = JSON.parse(localStorage.getItem('sprinPegawaiList') || '[]');
+    let p1, p2, p3, p4, p5, p6;
+    if (listPegawai.length >= 6) {
+        p1 = { nama: listPegawai[0].nama, nip: listPegawai[0].nip, pkt: listPegawai[0].pangkat || listPegawai[0].pkt, jab: listPegawai[0].jabatan || listPegawai[0].jab };
+        p2 = { nama: listPegawai[1].nama, nip: listPegawai[1].nip, pkt: listPegawai[1].pangkat || listPegawai[1].pkt, jab: listPegawai[1].jabatan || listPegawai[1].jab };
+        p3 = { nama: listPegawai[2].nama, nip: listPegawai[2].nip, pkt: listPegawai[2].pangkat || listPegawai[2].pkt, jab: listPegawai[2].jabatan || listPegawai[2].jab };
+        p4 = { nama: listPegawai[3].nama, nip: listPegawai[3].nip, pkt: listPegawai[3].pangkat || listPegawai[3].pkt, jab: listPegawai[3].jabatan || listPegawai[3].jab };
+        p5 = { nama: listPegawai[4].nama, nip: listPegawai[4].nip, pkt: listPegawai[4].pangkat || listPegawai[4].pkt, jab: listPegawai[4].jabatan || listPegawai[4].jab };
+        p6 = { nama: listPegawai[5].nama, nip: listPegawai[5].nip, pkt: listPegawai[5].pangkat || listPegawai[5].pkt, jab: listPegawai[5].jabatan || listPegawai[5].jab };
+    }
+    else {
+        p1 = { nama: getVal('form_ketua_tim'), nip: getVal('form_nip_ketua_tim'), pkt: getVal('form_gol_ketua_tim'), jab: getVal('form_jabatan_ketua_tim') || 'Ketua Tim Peneliti' };
+        p2 = { nama: getVal('form_pembuat_lpp'), nip: getVal('form_nip_pembuat_lpp'), pkt: getVal('form_gol_pembuat_lpp'), jab: getVal('form_jabatan_pembuat_lpp') || 'Petugas LPP' };
+        p3 = { nama: getVal('form_petugas_lpf'), nip: getVal('form_nip_petugas_lpf'), pkt: getVal('form_gol_petugas_lpf'), jab: getVal('form_jabatan_petugas_lpf') || 'Petugas LPF' };
+        p4 = { nama: getVal('form_indak_1'), nip: getVal('form_nip_indak_1'), pkt: getVal('form_gol_indak_1'), jab: getVal('form_jabatan_indak_1') || 'Petugas Penindakan 1' };
+        p5 = { nama: getVal('form_indak_2'), nip: getVal('form_nip_indak_2'), pkt: getVal('form_gol_indak_2'), jab: getVal('form_jabatan_indak_2') || 'Petugas Penindakan 2' };
+        p6 = { nama: getVal('form_indak_lainnya'), nip: getVal('form_nip_indak_lainnya'), pkt: getVal('form_gol_indak_lainnya'), jab: getVal('form_jabatan_indak_lainnya') || 'Petugas Penindakan 3' };
+    }
+    let timPeneliti = [p1, p2, p3];
+    let timPenindakan = [p4, p5, p6];
+    let allPetugas = [p1, p2, p3, p4, p5, p6];
+    let renderTabelPegawai = (list) => list.map((p, idx) => `
     <table style="width:100%; border-collapse:collapse; margin-bottom:4px; font-family:Arial, sans-serif;">
       <tr>
         <td style="width:5%; text-align:right; padding-right:12px; vertical-align:top;">${idx + 1}.</td>
@@ -1027,30 +962,30 @@ export function BA() {
       </tr>
     </table>
   `).join('');
-  let renderSignaturesBA_P1 = () => `
+    let renderSignaturesBA_P1 = () => `
     <div style="page-break-inside: avoid !important; margin-top:20px; font-family:Arial, sans-serif;">
       <div style="text-align:left; margin-bottom:12px; font-weight:normal;">
         Yang Melakukan Pencacahan,
       </div>
       <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; text-align:left;">
-        ${allPetugas.map(p => `
+        ${allPetugas.map((p) => `
           <div>
             <div style="font-size:9.5pt;">${escText(p.jab)},</div>
             <div class="signature"></div>
             ${tteBadge()}
-            <b>${escText(p.nama)}</b><br>NIP. ${escText(p.nip)}
+            <b>${escText(p.nama)}</b><br>NIP.${escText(p.nip)}
           </div>
         `).join('')}
       </div>
     </div>
   `;
-  let renderSignaturesBA_Landscape = () => `
+    let renderSignaturesBA_Landscape = () => `
     <div style="page-break-inside: avoid !important; margin-top:20px; font-family:Arial, sans-serif;">
       <div style="text-align:left; margin-bottom:8px; font-weight:normal;">
         Yang Melakukan Pencacahan,
       </div>
       <div style="display:grid; grid-template-columns: repeat(6, 1fr); gap:10px; text-align:left;">
-        ${allPetugas.map(p => `
+        ${allPetugas.map((p) => `
           <div>
             <div style="font-size:8pt; line-height:1.2; min-height:24px;">${escText(p.jab)},</div>
             <div class="signature" style="height:50px;"></div>
@@ -1061,11 +996,16 @@ export function BA() {
       </div>
     </div>
   `;
-  let page1 = baseReport('BERITA ACARA PENCACAHAN', noBA, true) + `<p style="text-align:justify; font-family:Arial, sans-serif; line-height:1.4; margin-bottom:6px;">
+    let page1 = baseReport('BERITA ACARA PENCACAHAN', noBA, true) +
+        `<p style="text-align:justify; font-family:Arial, sans-serif; line-height:1.4; margin-bottom:6px;">
     --------- Pada hari ini ${hariCacah} tanggal ${teksTgl} di Tempat Penimbunan Pabean Kantor Pelayanan Utama Bea Cukai Tipe B Batam, berdasarkan Surat Perintah Pencacahan Barang Hasil Penindakan (SPPBHP) Kepala Bidang Penindakan dan Penyidikan nomor ${noSprin} tanggal ${tglSprin}, kami: ----------
-  </p>` + renderTabelPegawai(timPeneliti) + `<div style="margin:6px 0 6px 0; font-family:Arial, sans-serif;">
+  </p>` +
+        renderTabelPegawai(timPeneliti) +
+        `<div style="margin:6px 0 6px 0; font-family:Arial, sans-serif;">
     bersama-sama dengan: -----------------------------------------------------------------------------------------
-  </div>` + renderTabelPegawai(timPenindakan) + `<p style="text-align:justify; font-family:Arial, sans-serif; line-height:1.4; margin-top:6px; margin-bottom:6px;">
+  </div>` +
+        renderTabelPegawai(timPenindakan) +
+        `<p style="text-align:justify; font-family:Arial, sans-serif; line-height:1.4; margin-top:6px; margin-bottom:6px;">
     telah melakukan pencacahan terhadap Barang Hasil Penindakan yang berasal dari penindakan di ${lokasi} sesuai dengan Surat Bukti Penindakan Nomor ${noSBP}, dengan hasil pencacahan sebagaimana terlampir. ------------------------------------
   </p>
   <p style="text-align:justify; font-family:Arial, sans-serif; line-height:1.4; margin-bottom:6px;">
@@ -1073,8 +1013,9 @@ export function BA() {
   </p>
   <p style="text-align:justify; font-family:Arial, sans-serif; line-height:1.4; margin-bottom:6px;">
     Demikian Berita Acara ini dibuat dengan sebenarnya dan ditandatangani pada tempat dan waktu tersebut di atas. ------------------------------------------------------------------------------------------------
-  </p>` + renderSignaturesBA_P1() + `</div>`;
-  let page2 = `<div class="pagebreak"></div>
+  </p>` +
+        renderSignaturesBA_P1() + `</div>`;
+    let page2 = `<div class="pagebreak"></div>
   <div class="${paperLandscapeClass}">
     <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
       <div style="width:30%; text-align:justify;">
@@ -1116,7 +1057,8 @@ export function BA() {
               </div>
               <div style="font-size:8.5pt; color:#64748b;">Silakan pilih filter dokumen <b>BA Cacah</b> di atas, lalu klik tombol <b>+ Tambah Barang Cacah</b> untuk memasukkan uraian barang agar muncul di baris tabel ini.</div>
             </td>
-          </tr>` : items.map((x, i) => `<tr>
+          </tr>` :
+        items.map((x, i) => `<tr>
             <td style="text-align:center; border:1px solid #000; vertical-align:top; padding:6px;">${i + 1}</td>
             <td style="text-align:center; border:1px solid #000; vertical-align:top; padding:6px;">${escText(x.komoditi || getVal('Komoditi'))}</td>
             <td style="text-align:left; border:1px solid #000; vertical-align:top; padding:6px;">${escText(x.uraian)}</td>
@@ -1132,68 +1074,74 @@ export function BA() {
     </table>
     ${renderSignaturesBA_Landscape()}
   </div>`;
-  return page1 + page2;
+    return page1 + page2;
 }
 export function LHP() {
-  let tglLHP = formatDate('Tanggal_LHP') !== '-' ? formatDate('Tanggal_LHP') : formatDate('Tanggal_LP_LP_1');
-  let rawJam = document.getElementById('Jam_Kejadian') ? document.getElementById('Jam_Kejadian').value.trim() : '';
-  let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
-  let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
-  let dokPabVal = getVal('Dokumen_Pemberitahuan');
-  let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select') ? document.getElementById('Jenis_Dok_Pemberitahuan_Select').value : '';
-  let jenisDok = selJenis === 'LAINNYA' ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual') ? document.getElementById('Jenis_Dok_Pemberitahuan_Manual').value.trim() : '' : selJenis !== '-' ? selJenis : '';
-  let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan') ? document.getElementById('Nomor_Dok_Pemberitahuan').value.trim() : '';
-  let jenisDokPabeanDisplay = '-';
-  let nomorTglPabeanDisplay = '-';
-  if (dokPabVal.toLowerCase().includes('tanpa dokumen') || selJenis === 'Tanpa Dokumen' || !dokPabVal || dokPabVal === '-') {
-    jenisDokPabeanDisplay = 'Tanpa Dokumen';
-    nomorTglPabeanDisplay = '-';
-  } else {
-    let rawString = (jenisDok ? jenisDok + ' ' : '') + (nomorDok ? nomorDok : dokPabVal);
-    rawString = rawString.trim().replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '');
-    let matchBC = rawString.match(/^(BC\s*\d+(?:\.\d+)?|[A-Z]{2,10})\s*(?:nomor\s+|no\.?\s+)?(.*)$/i);
-    let nomorSaja = '';
-    if (matchBC) {
-      jenisDokPabeanDisplay = escText(matchBC[1].trim());
-      nomorSaja = matchBC[2].trim();
-    } else {
-      jenisDokPabeanDisplay = escText(jenisDok || 'BC 2.0');
-      nomorSaja = rawString;
+    let tglLHP = formatDate('Tanggal_LHP') !== '-' ? formatDate('Tanggal_LHP') : formatDate('Tanggal_LP_LP_1');
+    let rawJam = document.getElementById('Jam_Kejadian')?.value.trim() || '';
+    let jamFormatted = rawJam ? rawJam.replace(':', '.') + ' WIB' : '-';
+    let tglDokPab = formatDate('Tanggal_Dokumen_Pemberitahuan');
+    let dokPabVal = getVal('Dokumen_Pemberitahuan');
+    let selJenis = document.getElementById('Jenis_Dok_Pemberitahuan_Select')?.value || '';
+    let jenisDok = selJenis === 'LAINNYA'
+        ? (document.getElementById('Jenis_Dok_Pemberitahuan_Manual')?.value.trim() || '')
+        : (selJenis !== '-' ? selJenis : '');
+    let nomorDok = document.getElementById('Nomor_Dok_Pemberitahuan')?.value.trim() || '';
+    let jenisDokPabeanDisplay = '-';
+    let nomorTglPabeanDisplay = '-';
+    if (dokPabVal.toLowerCase().includes('tanpa dokumen') || selJenis === 'Tanpa Dokumen' || !dokPabVal || dokPabVal === '-') {
+        jenisDokPabeanDisplay = 'Tanpa Dokumen';
+        nomorTglPabeanDisplay = '-';
     }
-    nomorSaja = nomorSaja.replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '').trim();
-    let partsNomorTgl = [];
-    if (nomorSaja) {
-      partsNomorTgl.push(escText(nomorSaja));
+    else {
+        let rawString = (jenisDok ? jenisDok + ' ' : '') + (nomorDok ? nomorDok : dokPabVal);
+        rawString = rawString.trim().replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '');
+        let matchBC = rawString.match(/^(BC\s*\d+(?:\.\d+)?|[A-Z]{2,10})\s*(?:nomor\s+|no\.?\s+)?(.*)$/i);
+        let nomorSaja = '';
+        if (matchBC) {
+            jenisDokPabeanDisplay = escText(matchBC[1].trim());
+            nomorSaja = matchBC[2].trim();
+        }
+        else {
+            jenisDokPabeanDisplay = escText(jenisDok || 'BC 2.0');
+            nomorSaja = rawString;
+        }
+        nomorSaja = nomorSaja.replace(/^nomor\s+/i, '').replace(/^no\.?\s+/i, '').trim();
+        let partsNomorTgl = [];
+        if (nomorSaja) {
+            partsNomorTgl.push(escText(nomorSaja));
+        }
+        if (tglDokPab && tglDokPab !== '-') {
+            partsNomorTgl.push(`tanggal ${tglDokPab}`);
+        }
+        nomorTglPabeanDisplay = partsNomorTgl.length > 0 ? partsNomorTgl.join(' ') : '-';
     }
-    if (tglDokPab && tglDokPab !== '-') {
-      partsNomorTgl.push(`tanggal ${tglDokPab}`);
+    let activeIdx = store.activeRecordIndex;
+    let rec = (activeIdx >= 0 && store.databasePerkara[activeIdx]) ? store.databasePerkara[activeIdx] : {};
+    let selPelengkap = document.getElementById('Jenis_Dok_Pelengkap_Select')?.value || (rec.Jenis_Dok_Pelengkap_Select || '-');
+    let manualPelengkap = document.getElementById('Jenis_Dok_Pelengkap_Manual')?.value.trim() || (rec.Jenis_Dok_Pelengkap_Manual || '');
+    let nomorPelengkap = document.getElementById('Nomor_Dok_Pelengkap')?.value.trim() || (rec.Nomor_Dok_Pelengkap || '');
+    let rawTglPelengkap = document.getElementById('Tanggal_Dok_Pelengkap')?.value || (rec.Tanggal_Dok_Pelengkap || '');
+    let tglPelengkapIndo = rawTglPelengkap ? formatDateIndo(rawTglPelengkap) : '';
+    let jenisPelengkapDisplay = '-';
+    let nomorTglPelengkapDisplay = '-';
+    if (selPelengkap !== '-' && selPelengkap !== '') {
+        jenisPelengkapDisplay = selPelengkap === 'LAINNYA' ? (manualPelengkap || 'Lainnya') : selPelengkap;
+        let partsPelengkap = [];
+        if (nomorPelengkap) {
+            partsPelengkap.push(escText(nomorPelengkap));
+        }
+        if (tglPelengkapIndo && tglPelengkapIndo !== '-') {
+            partsPelengkap.push(`tanggal ${tglPelengkapIndo}`);
+        }
+        nomorTglPelengkapDisplay = partsPelengkap.length > 0 ? partsPelengkap.join(' ') : '-';
     }
-    nomorTglPabeanDisplay = partsNomorTgl.length > 0 ? partsNomorTgl.join(' ') : '-';
-  }
-  let rec = store.activeRecordIndex >= 0 && store.databasePerkara[store.activeRecordIndex] ? store.databasePerkara[store.activeRecordIndex] : {};
-  let selPelengkap = document.getElementById('Jenis_Dok_Pelengkap_Select') ? document.getElementById('Jenis_Dok_Pelengkap_Select').value : rec.Jenis_Dok_Pelengkap_Select || '-';
-  let manualPelengkap = document.getElementById('Jenis_Dok_Pelengkap_Manual') ? document.getElementById('Jenis_Dok_Pelengkap_Manual').value.trim() : rec.Jenis_Dok_Pelengkap_Manual || '';
-  let nomorPelengkap = document.getElementById('Nomor_Dok_Pelengkap') ? document.getElementById('Nomor_Dok_Pelengkap').value.trim() : rec.Nomor_Dok_Pelengkap || '';
-  let rawTglPelengkap = document.getElementById('Tanggal_Dok_Pelengkap') ? document.getElementById('Tanggal_Dok_Pelengkap').value : rec.Tanggal_Dok_Pelengkap || '';
-  let tglPelengkapIndo = rawTglPelengkap ? formatDateIndo(rawTglPelengkap) : '';
-  let jenisPelengkapDisplay = '-';
-  let nomorTglPelengkapDisplay = '-';
-  if (selPelengkap !== '-' && selPelengkap !== '') {
-    jenisPelengkapDisplay = selPelengkap === 'LAINNYA' ? manualPelengkap || 'Lainnya' : selPelengkap;
-    let partsPelengkap = [];
-    if (nomorPelengkap) {
-      partsPelengkap.push(escText(nomorPelengkap));
-    }
-    if (tglPelengkapIndo && tglPelengkapIndo !== '-') {
-      partsPelengkap.push(`tanggal ${tglPelengkapIndo}`);
-    }
-    nomorTglPelengkapDisplay = partsPelengkap.length > 0 ? partsPelengkap.join(' ') : '-';
-  }
-  let rawModus = getVal('Modus_Operandi');
-  let modusVerb = formatModusVerb(rawModus);
-  let modusClean = modusVerb.endsWith(';') ? modusVerb.slice(0, -1) : modusVerb;
-  let tglSplitDisplay = formatDate('Tanggal_SPLIT') !== '-' ? formatDate('Tanggal_SPLIT') : formatDate('Tanggal_LP_LP_1');
-  return baseReport('LEMBAR HASIL PENELITIAN (LHP)', fmtLHP(), false) + `<!-- HEADER ATAS -->
+    let rawModus = getVal('Modus_Operandi');
+    let modusVerb = formatModusVerb(rawModus);
+    let modusClean = modusVerb.endsWith(';') ? modusVerb.slice(0, -1) : modusVerb;
+    let tglSplitDisplay = formatDate('Tanggal_SPLIT') !== '-' ? formatDate('Tanggal_SPLIT') : formatDate('Tanggal_LP_LP_1');
+    return baseReport('LEMBAR HASIL PENELITIAN (LHP)', fmtLHP(), false) +
+        `<!-- HEADER ATAS -->
   <table class="rtable" style="margin-bottom:12px; width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:10pt; line-height:1.35; table-layout:fixed;">
     <colgroup>
       <col style="width:105px;">

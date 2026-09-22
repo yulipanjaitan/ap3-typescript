@@ -253,11 +253,12 @@ export function deleteUserAccount(index: number): void {
 }
 
 export function populateDisposisiUserDropdown(): void {
-  let select = document.getElementById('val_disposisi_user');
+  let select = document.getElementById('dsp_target_penyidik');
   if (!select) return;
 
   let penyidikList = (store.userAccounts as any[]).filter((u: any) => u.role === 'Penyidik / Ketua Tim Peneliti');
-  select.innerHTML = `<option value="-">- Pilih Penyidik -</option>` + penyidikList.map((u: any) => `<option value="${escText(u.nama)}">${escText(u.nama)}</option>`).join('');
+  select.innerHTML = `<option value="-">- Pilih Penyidik / Peneliti Tujuan -</option>` + 
+    penyidikList.map((u: any) => `<option value="${escText(u.nama)}">${escText(u.nama)} (${escText(u.email)})</option>`).join('');
 }
 
 export function toggleDropdown(event: Event): void {

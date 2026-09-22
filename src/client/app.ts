@@ -68,6 +68,12 @@ document.addEventListener("DOMContentLoaded", function() {
   auth.checkLoginSession();
   perkara.populateAgeDropdown();
 
+  // --- INISIALISASI MODUL DISPOSISI AGAR LANGSUNG MUNCUL SAAT AWAL ---
+  disposisi.renderDisposisiTable();
+  disposisi.checkDisposisiAccessByRole();
+  disposisi.cekNotifikasiDisposisiMasuk();
+  // -----------------------------------------------------------------
+
   const navButtons = document.querySelectorAll('.nav-btn');
   const tabPanes = document.querySelectorAll('.tab-pane');
 

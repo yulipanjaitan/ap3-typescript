@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "perkaraId": null,
+    "kepada": "",
+    "dari": "Admin System",
+    "instruksi": "",
+    "catatan": "",
+    "status": "TERKIRIM",
+    "id": 1,
+    "createdAt": "2026-09-22T04:51:40.052Z"
+  },
+  {
+    "perkaraId": null,
+    "kepada": "",
+    "dari": "Admin System",
+    "instruksi": "",
+    "catatan": "",
+    "status": "TERKIRIM",
+    "id": 2,
+    "createdAt": "2026-09-22T04:53:02.022Z"
+  }
+]

@@ -1408,59 +1408,55 @@
     </div>
     
     <div class="modal-body">
-      <input type="hidden" id="editingDisposisiIndex" value="-1">
+      <input type="hidden" id="dspRecordId" value="">
+
       <div class="grid">
         <div style="grid-column: span 2;">
           <label>Nama Pelaku / Pihak Terkait</label>
-          <input id="dsp_nama_pelaku" placeholder="Nama lengkap pelaku...">
+          <input id="dsp_nama_pelaku" class="form-control" placeholder="Nama lengkap pelaku...">
+        </div>
+
+        <div>
+          <label>Jenis Identitas</label>
+          <select id="dsp_jenis_identitas" class="form-control">
+            <option value="">-- Pilih Jenis Identitas --</option>
+          </select>
+        </div>
+        <div>
+          <label>No. Identitas</label>
+          <input id="dsp_no_identitas" class="form-control" placeholder="Nomor identitas...">
         </div>
 
         <div style="grid-column: span 2;">
           <label>Jenis Perkara</label>
-          <select id="dsp_jenis_perkara_select" onchange="syncDspJenisPerkara(this.value)">
-            <option value="-">- Pilih Jenis Perkara -</option>
-            <option value="Cukai - HT">Cukai - HT</option>
-            <option value="Cukai - EA">Cukai - EA</option>
-            <option value="Cukai - MMEA">Cukai - MMEA</option>
-            <option value="Impor - Umum">Impor - Umum</option>
-            <option value="Impor - Barang Penumpang">Impor - Barang Penumpang</option>
-            <option value="Impor - Barang Kiriman">Impor - Barang Kiriman</option>
-            <option value="Ekspor - Umum">Ekspor - Umum</option>
-            <option value="Ekspor - Barang Penumpang">Ekspor - Barang Penumpang</option>
-            <option value="Ekspor - Barang Kiriman">Ekspor - Barang Kiriman</option>
-            <option value="Fasilitas - FTZ">Fasilitas - FTZ</option>
-            <option value="Fasilitas - Impor Sementara">Fasilitas - Impor Sementara</option>
+          <select id="dsp_jenis_perkara_select" onchange="syncDspJenisPerkara(this.value)" class="form-control">
+            <option value="">-- Pilih Jenis Perkara --</option>
           </select>
           <input id="dsp_jenis_perkara" style="display:none;">
         </div>
 
         <div style="grid-column: span 2;">
+          <label>Komoditi</label>
+          <select id="dsp_komoditi" class="form-control">
+            <option value="">-- Pilih Komoditi --</option>
+          </select>
+        </div>
+
+        <div style="grid-column: span 2;">
           <label>No. Dokumen Pemberitahuan</label>
           <div style="display:flex; gap:6px;">
-            <select id="dsp_jenis_dok_select" onchange="toggleDspJenisDokumen(this.value)" style="width:160px;">
-              <option value="Tanpa Dokumen">Tanpa Dokumen</option>
-              <option value="-">- Pilih Jenis -</option>
-              <option value="CN">CN</option>
-              <option value="PIBK">PIBK</option>
-              <option value="BC 1.0">BC 1.0</option>
-              <option value="BC 1.1">BC 1.1</option>
-              <option value="BC 2.0">BC 2.0</option>
-              <option value="BC 2.3">BC 2.3</option>
-              <option value="BC 3.0">BC 3.0</option>
-              <option value="PPFTZ-01">PPFTZ-01</option>
-              <option value="PPFTZ-02">PPFTZ-02</option>
-              <option value="PPFTZ-03">PPFTZ-03</option>
-              <option value="LAINNYA">DLL (Manual)</option>
+            <select id="dsp_jenis_dok_select" onchange="toggleDspJenisDokumen(this.value)" style="width:160px;" class="form-control">
+              <option value="">-- Pilih Jenis Dokumen --</option>
             </select>
-            <input id="dsp_jenis_dok_manual" placeholder="Ketik jenis..." style="display:none; width:120px;" oninput="syncDspDokumenPemberitahuan()">
-            <input id="dsp_nomor_dok" placeholder="Nomor Dokumen..." oninput="syncDspDokumenPemberitahuan()" style="flex:1;" disabled>
+            <input id="dsp_jenis_dok_manual" placeholder="Ketik jenis..." style="display:none; width:120px;" oninput="syncDspDokumenPemberitahuan()" class="form-control">
+            <input id="dsp_nomor_dok" placeholder="Nomor Dokumen..." oninput="syncDspDokumenPemberitahuan()" style="flex:1;" disabled class="form-control">
           </div>
           <input type="hidden" id="dsp_dokumen_pemberitahuan" value="Tanpa Dokumen">
         </div>
 
         <div>
           <label>Tanggal Dokumen Pemberitahuan</label>
-          <input id="dsp_tgl_dokumen" type="date">
+          <input id="dsp_tgl_dokumen" type="date" class="form-control">
         </div>
 
         <div></div>
@@ -1470,82 +1466,71 @@
           <div class="grid3" style="margin-bottom:8px;">
             <div>
               <label>Jumlah Koli / Kemasan</label>
-              <input id="dsp_jumlah_koli" placeholder="Contoh: 1" oninput="generateDspUraianBarangOtomatis()">
+              <input id="dsp_jumlah_koli" placeholder="Contoh: 1" oninput="generateDspUraianBarangOtomatis()" class="form-control">
             </div>
             <div>
               <label>Jenis Koli / Kemasan</label>
-              <select id="dsp_jenis_koli_select" onchange="handleDspJenisKoliChange(this.value)">
-                <option value="-">- Pilih Jenis Koli -</option>
-                <option value="koli">Koli</option>
-                <option value="karton">Karton</option>
-                <option value="box">Box / Dus</option>
-                <option value="karung">Karung</option>
-                <option value="peti">Peti</option>
-                <option value="pallet">Pallet</option>
-                <option value="bag">Bag / Kantong</option>
-                <option value="bundel">Bundel</option>
-                <option value="pcs">Pcs</option>
-                <option value="pack">Pack</option>
-                <option value="unit">Unit</option>
-                <option value="kg">Kg</option>
-                <option value="liter">Liter</option>
-                <option value="LAINNYA">Satuan Lainnya (Manual)</option>
+              <select id="dsp_jenis_koli_select" onchange="handleDspJenisKoliChange(this.value)" class="form-control">
+                <option value="">-- Pilih Jenis Koli --</option>
               </select>
-              <input id="dsp_jenis_koli" placeholder="Ketik jenis koli..." style="margin-top:4px; display:none;" oninput="generateDspUraianBarangOtomatis()">
+              <input id="dsp_jenis_koli" placeholder="Ketik jenis koli..." style="margin-top:4px; display:none;" oninput="generateDspUraianBarangOtomatis()" class="form-control">
             </div>
             <div>
               <label>Nama Barang</label>
-              <input id="dsp_auto_barang" placeholder="Contoh: beras, pisang" oninput="generateDspUraianBarangOtomatis()">
+              <input id="dsp_auto_barang" placeholder="Contoh: beras, pisang" oninput="generateDspUraianBarangOtomatis()" class="form-control">
             </div>
           </div>
         </div>
 
         <div style="grid-column: span 2;">
           <label>Uraian Barang (Hasil Auto Teks / Bisa Diedit Langsung)</label>
-          <textarea id="dsp_uraian_barang" placeholder="Hasil uraian barang otomatis..."></textarea>
+          <textarea id="dsp_uraian_barang" placeholder="Hasil uraian barang otomatis..." class="form-control"></textarea>
         </div>
 
         <div>
           <label>Nomor LP (Cukup Angka)</label>
-          <input id="dsp_no_lp" placeholder="Contoh: 01" oninput="updateDspCodePreviews()">
+          <input id="dsp_no_lp" placeholder="Contoh: 01" oninput="updateDspCodePreviews()" class="form-control">
           <span class="live-code-preview" id="dsp_preview_NoLP">LP-1/KPU.206/2026</span>
         </div>
         <div>
           <label>Tanggal LP</label>
-          <input type="date" id="dsp_tgl_lp">
+          <input type="date" id="dsp_tgl_lp" class="form-control">
         </div>
 
         <div>
           <label>Nomor SBP (Cukup Angka)</label>
-          <input id="dsp_no_sbp" placeholder="Contoh: 01" oninput="updateDspCodePreviews()">
+          <input id="dsp_no_sbp" placeholder="Contoh: 01" oninput="updateDspCodePreviews()" class="form-control">
           <span class="live-code-preview" id="dsp_preview_SBP">SBP-1/MANDIRI/KPU.2/2026</span>
         </div>
         <div>
           <label>Tanggal SBP</label>
-          <input type="date" id="dsp_tgl_sbp">
+          <input type="date" id="dsp_tgl_sbp" class="form-control">
         </div>
 
         <div>
           <label>Nomor SPRIN INDAK (Cukup Angka)</label>
-          <input id="dsp_no_sprin" placeholder="Contoh: 01" oninput="updateDspCodePreviews()">
+          <input id="dsp_no_sprin" placeholder="Contoh: 01" oninput="updateDspCodePreviews()" class="form-control">
           <span class="live-code-preview" id="dsp_preview_SPRIN">SPRIN-01/KPU.206/2026</span>
         </div>
         <div>
           <label>Tanggal SPRIN INDAK</label>
-          <input type="date" id="dsp_tgl_sprin">
+          <input type="date" id="dsp_tgl_sprin" class="form-control">
         </div>
 
         <div style="grid-column: span 2;">
           <label>Tunjuk Penyidik / Ketua Tim Peneliti</label>
-          <select id="dsp_target_penyidik"></select>
+          <select id="dsp_target_penyidik" class="form-control"></select>
         </div>
       </div>
     </div>
 
-    <div class="modal-footer">
+    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px;">
       <button type="button" class="btn secondary" onclick="closeDisposisiModal()">Batal</button>
-      <button type="button" class="btn primary" onclick="saveAndSendDisposisi()">
-        <i class="fi fi-rr-paper-plane"></i> Simpan & Disposisikan Berkas
+      <button type="button" id="btnSimpanDraftDsp" class="btn warning" onclick="saveAsDraftDisposisi()">
+        <i class="fi fi-rr-disk"></i> Simpan Draft
+      </button>
+      <button type="button" id="btnKirimDsp" class="btn primary" onclick="sendDisposisi()">
+        <i class="fi fi-rr-paper-plane"></i> Kirim Disposisi
       </button>
     </div>
   </div>
